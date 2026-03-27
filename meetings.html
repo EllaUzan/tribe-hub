@@ -178,7 +178,7 @@
     .event-desc {
       font-size: 13px;
       font-weight: 300;
-      color: rgba(255,255,255,0.38);
+      color: rgba(255,255,255,0.65);
       line-height: 1.6;
     }
 
@@ -395,18 +395,6 @@
     const audio = document.getElementById('ambient');
     const btn = document.getElementById('soundBtn');
     const icon = document.getElementById('soundIcon');
-
-    function startOnInteraction() {
-      audio.play().then(() => {
-        btn.classList.add('playing');
-        icon.textContent = '♫';
-      });
-      document.removeEventListener('click', startOnInteraction);
-      document.removeEventListener('touchstart', startOnInteraction);
-    }
-
-    document.addEventListener('click', startOnInteraction);
-    document.addEventListener('touchstart', startOnInteraction);
 
     function toggleSound() {
       if (audio.paused) {

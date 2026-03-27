@@ -436,17 +436,6 @@
     const icon = document.getElementById('soundIcon');
 
     // autoplay on first interaction
-    function startOnInteraction() {
-      audio.play().then(() => {
-        btn.classList.add('playing');
-        icon.textContent = '♫';
-      });
-      document.removeEventListener('click', startOnInteraction);
-      document.removeEventListener('touchstart', startOnInteraction);
-    }
-
-    document.addEventListener('click', startOnInteraction);
-    document.addEventListener('touchstart', startOnInteraction);
 
     function toggleSound() {
       if (audio.paused) {
