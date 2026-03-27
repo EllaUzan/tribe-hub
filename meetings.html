@@ -404,7 +404,8 @@
     document.addEventListener('click', startOnInteraction);
     document.addEventListener('touchstart', startOnInteraction);
 
-    window.addEventListener('beforeunload', () => { audio.pause(); });
+    window.addEventListener('pagehide', () => { audio.pause(); });
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') audio.pause(); });
 
     function toggleSound() {
       if (audio.paused) {
