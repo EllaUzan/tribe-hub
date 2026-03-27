@@ -630,6 +630,16 @@ G. הכרת תודה + חתימה
     const btn = document.getElementById('soundBtn');
     const icon = document.getElementById('soundIcon');
 
+    function startOnInteraction() {
+      audio.play().then(() => { btn.classList.add('playing'); icon.textContent = '♫'; }).catch(()=>{});
+      document.removeEventListener('click', startOnInteraction);
+      document.removeEventListener('touchstart', startOnInteraction);
+    }
+    document.addEventListener('click', startOnInteraction);
+    document.addEventListener('touchstart', startOnInteraction);
+
+    window.addEventListener('beforeunload', () => { audio.pause(); });
+
     function toggleSound() {
       if (audio.paused) { audio.play(); btn.classList.add('playing'); icon.textContent = '♫'; }
       else { audio.pause(); btn.classList.remove('playing'); icon.textContent = '♪'; }
