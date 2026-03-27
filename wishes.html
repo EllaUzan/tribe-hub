@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>משאלות השבט</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Heebo:wght@200;300;400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100%;
+      font-family: 'Heebo', sans-serif;
+      background: #080a0e;
+      color: #fff;
+    }
+
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .bg video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.25;
+    }
+
+    .bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(8,10,14,0.5) 0%, rgba(8,10,14,0.2) 40%, rgba(8,10,14,0.9) 100%);
+      z-index: 1;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 60px 32px 100px;
+    }
+
+    /* ─── BACK ─── */
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      color: rgba(255,255,255,0.28);
+      text-decoration: none;
+      text-transform: uppercase;
+      margin-bottom: 52px;
+      transition: color 0.2s;
+    }
+    .back:hover { color: rgba(255,255,255,0.6); }
+
+    /* ─── HEADER ─── */
+    .header { margin-bottom: 52px; }
+
+    .header-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      color: rgba(255,255,255,0.25);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .header h1 {
+      font-size: clamp(28px, 5vw, 44px);
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+
+    .header h1 em { font-style: normal; color: #ff3366; }
+
+    .header-sub {
+      font-size: 14px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.35);
+      line-height: 1.7;
+    }
+
+    .divider {
+      width: 40px;
+      height: 1px;
+      background: rgba(255,255,255,0.12);
+      margin: 36px 0;
+    }
+
+    /* ─── SECTION LABEL ─── */
+    .section-label {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: rgba(255,255,255,0.2);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    /* ─── WISH CARDS ─── */
+    .wishes { display: flex; flex-direction: column; gap: 0; margin-bottom: 56px; }
+
+    .wish {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: 18px;
+      padding: 18px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      align-items: start;
+    }
+
+    .wish:last-child { border-bottom: none; }
+
+    .wish-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.5);
+      flex-shrink: 0;
+    }
+
+    .wish-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.65);
+      margin-bottom: 5px;
+    }
+
+    .wish-text {
+      font-size: 13px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.38);
+      line-height: 1.75;
+    }
+
+    .wish-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .tag {
+      font-family: 'Cinzel', serif;
+      font-size: 8px;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.22);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 2px 8px;
+      border-radius: 2px;
+      text-transform: uppercase;
+    }
+
+    /* ─── FORM ─── */
+    .form-section {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 44px;
+    }
+
+    .form-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .form-sub {
+      font-size: 13px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.32);
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+
+    form { display: flex; flex-direction: column; gap: 14px; }
+
+    .field { display: flex; flex-direction: column; gap: 6px; }
+
+    label {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      color: rgba(255,255,255,0.25);
+      text-transform: uppercase;
+    }
+
+    input, textarea {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: #fff;
+      font-family: 'Heebo', sans-serif;
+      font-size: 14px;
+      font-weight: 300;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+      width: 100%;
+      direction: rtl;
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: rgba(255,255,255,0.2);
+    }
+
+    input:focus, textarea:focus {
+      border-color: rgba(255,51,102,0.35);
+      background: rgba(255,255,255,0.06);
+    }
+
+    textarea { min-height: 100px; resize: vertical; }
+
+    .submit-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: rgba(255,51,102,0.12);
+      border: 1px solid rgba(255,51,102,0.3);
+      color: rgba(255,100,140,0.9);
+      font-family: 'Heebo', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 13px 28px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+      align-self: flex-start;
+    }
+
+    .submit-btn:hover {
+      background: rgba(255,51,102,0.2);
+      border-color: rgba(255,51,102,0.5);
+      color: #fff;
+    }
+
+    .success-msg {
+      display: none;
+      padding: 16px 20px;
+      border: 1px solid rgba(255,51,102,0.2);
+      border-radius: 8px;
+      background: rgba(255,51,102,0.06);
+      color: rgba(255,100,140,0.8);
+      font-size: 14px;
+      font-weight: 300;
+    }
+
+    /* back btn */
+    .back-btn {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 16px;
+      height: 36px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.45);
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+      z-index: 100;
+    }
+    .back-btn:hover {
+      background: rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.85);
+      border-color: rgba(255,255,255,0.22);
+    }
+
+    /* sound */
+    .sound-btn {
+      position: fixed;
+      bottom: 28px;
+      left: 28px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.4);
+      font-size: 15px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      z-index: 10;
+      backdrop-filter: blur(8px);
+    }
+    .sound-btn.playing { border-color: rgba(255,51,102,0.4); color: #ff3366; }
+  </style>
+</head>
+<body>
+
+  <div class="bg">
+    <video autoplay muted loop playsinline>
+      <source src="bg.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <a class="back-btn" href="index.html">← ארגז הכלים</a>
+
+  <div class="page">
+
+    <a class="back" href="index.html">← ארגז הכלים</a>
+
+    <div class="header">
+      <div class="header-eyebrow">The Tribe · Wishes</div>
+      <h1>מה את<br /><em>רוצה ללמוד?</em></h1>
+      <p class="header-sub">הבקשות של השבט — מה שאתן כתבתן, מה שאנחנו בונים בשבילכן.</p>
+    </div>
+
+    <div class="section-label">משאלות השבט</div>
+
+    <div class="wishes">
+
+      <div class="wish">
+        <div class="wish-avatar">נ</div>
+        <div>
+          <div class="wish-name">נטלי</div>
+          <div class="wish-text">אימון לורה, עבודה עם Runway וסורה מהבסיס. וורקפלואו, מוד בורד. היכרות מעמיקה עם כל התוכנות השונות וההבדלים ביניהן.</div>
+          <div class="wish-tags">
+            <span class="tag">Runway</span>
+            <span class="tag">LoRA</span>
+            <span class="tag">וידאו</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="wish">
+        <div class="wish-avatar">ד</div>
+        <div>
+          <div class="wish-name">דורית</div>
+          <div class="wish-text">חידוד על עבודה עם Astria מעבר ליצירת מודל. פלטפורמה ליצירת תמונות תדמית (לא לרווח). יצירת דמות עקבית — העמקה בקלינג ו-Runway. Ideogram — באיזה תרחיש שווה לעבוד איתו.</div>
+          <div class="wish-tags">
+            <span class="tag">Astria</span>
+            <span class="tag">Kling</span>
+            <span class="tag">Ideogram</span>
+            <span class="tag">תדמית</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="wish">
+        <div class="wish-avatar">ס</div>
+        <div>
+          <div class="wish-name">סמדר</div>
+          <div class="wish-text">Runway — מדריך על הפיצ'רים החדשים: Aleph, Take 2.</div>
+          <div class="wish-tags">
+            <span class="tag">Runway</span>
+            <span class="tag">Aleph</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="wish">
+        <div class="wish-avatar">ט</div>
+        <div>
+          <div class="wish-name">טל</div>
+          <div class="wish-text">הנפשה של חלקים ספציפיים בדימוי, דיוק האנימציה, שמירה על צבעוניות ו"מפרט טכני" בהנפשה מתמונה. יצירת דימויים שנראים אותנטיים ולא שנוצרו ב-AI. עבודה עם סאונד: קריינות ב-ElevenLabs, פסקול בסונו.</div>
+          <div class="wish-tags">
+            <span class="tag">אנימציה</span>
+            <span class="tag">ElevenLabs</span>
+            <span class="tag">סאונד</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="wish">
+        <div class="wish-avatar">ש</div>
+        <div>
+          <div class="wish-name">שלי מדרר</div>
+          <div class="wish-text">סרטון שהדמות עוברת מצב של פרצופים — אישה, לפיה, לפרפר. איך הופכים את זה לעיסוק למי שלא בא מהתחום.</div>
+          <div class="wish-tags">
+            <span class="tag">מורפינג</span>
+            <span class="tag">וידאו</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="wish">
+        <div class="wish-avatar">ד</div>
+        <div>
+          <div class="wish-name">דניאלה</div>
+          <div class="wish-text">העמקה בתכנות בהקשר של עולם עיצוב פנים ואדריכלות.</div>
+          <div class="wish-tags">
+            <span class="tag">קוד</span>
+            <span class="tag">אדריכלות</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="wish">
+        <div class="wish-avatar">א</div>
+        <div>
+          <div class="wish-name">אדר</div>
+          <div class="wish-text">הפיכה של סקיצות ידניות (של תכשיטים למשל) לאובייקטים תלת-מימדיים ריאליסטיים שנראים אמיתיים, ואיך להלביש אותם על דוגמניות באופן תפור היטב.</div>
+          <div class="wish-tags">
+            <span class="tag">תכשיטים</span>
+            <span class="tag">3D</span>
+            <span class="tag">פאשן</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="wish">
+        <div class="wish-avatar">א</div>
+        <div>
+          <div class="wish-name">אוליביה</div>
+          <div class="wish-text">להבין את ההבדלים בין כלי AI שונים ומתי כדאי להשתמש בכל אחד. ללמוד להכין מודלים עקביים. לכתוב פרומפטים נכון ולקבל תוצאות שדומות למה שיש לי בראש.</div>
+          <div class="wish-tags">
+            <span class="tag">פרומפטים</span>
+            <span class="tag">מודלים</span>
+            <span class="tag">כלי AI</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- FORM -->
+    <div class="form-section">
+      <div class="form-title">יש לך משאלה?</div>
+      <p class="form-sub">כתבי מה את רוצה ללמוד — ואלה תראה.</p>
+
+      <form id="wishForm" action="https://formspree.io/f/REPLACE_WITH_YOUR_ID" method="POST">
+        <div class="field">
+          <label for="name">שם</label>
+          <input type="text" id="name" name="name" placeholder="השם שלך" required />
+        </div>
+        <div class="field">
+          <label for="wish">המשאלה שלי</label>
+          <textarea id="wish" name="wish" placeholder="מה את רוצה ללמוד? כלי, נושא, טכניקה..." required></textarea>
+        </div>
+        <input type="hidden" name="_subject" value="משאלה חדשה מהשבט" />
+        <input type="text" name="_gotcha" style="display:none" />
+        <button type="submit" class="submit-btn">שלחי משאלה →</button>
+        <div class="success-msg" id="successMsg">קיבלנו! אלה תראה. 🔥</div>
+      </form>
+    </div>
+
+  </div>
+
+  <button class="sound-btn" id="soundBtn" onclick="toggleSound()"><span id="soundIcon">♪</span></button>
+  <audio id="ambient" src="ambient.mp3" loop></audio>
+
+  <script>
+    // sound
+    const audio = document.getElementById('ambient');
+    const btn = document.getElementById('soundBtn');
+    const icon = document.getElementById('soundIcon');
+
+    function startOnInteraction() {
+      audio.play().then(() => { btn.classList.add('playing'); icon.textContent = '♫'; });
+      document.removeEventListener('click', startOnInteraction);
+      document.removeEventListener('touchstart', startOnInteraction);
+    }
+    document.addEventListener('click', startOnInteraction);
+    document.addEventListener('touchstart', startOnInteraction);
+
+    function toggleSound() {
+      if (audio.paused) { audio.play(); btn.classList.add('playing'); icon.textContent = '♫'; }
+      else { audio.pause(); btn.classList.remove('playing'); icon.textContent = '♪'; }
+    }
+
+    // form submit
+    const form = document.getElementById('wishForm');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const res = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      });
+      if (res.ok) {
+        form.reset();
+        document.getElementById('successMsg').style.display = 'block';
+      }
+    });
+  </script>
+
+</body>
+</html>

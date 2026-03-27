@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>מהלייבים · השבט</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Heebo:wght@200;300;400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100%;
+      font-family: 'Heebo', sans-serif;
+      background: #080a0e;
+      color: #fff;
+    }
+
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .bg video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.22;
+    }
+    .bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(8,10,14,0.55) 0%, rgba(8,10,14,0.15) 40%, rgba(8,10,14,0.9) 100%);
+      z-index: 1;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 60px 32px 100px;
+    }
+
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      color: rgba(255,255,255,0.28);
+      text-decoration: none;
+      text-transform: uppercase;
+      margin-bottom: 52px;
+      transition: color 0.2s;
+    }
+    .back:hover { color: rgba(255,255,255,0.6); }
+
+    /* ─── HEADER ─── */
+    .header { margin-bottom: 52px; }
+
+    .header-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      color: rgba(255,255,255,0.22);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .header h1 {
+      font-size: clamp(28px, 5vw, 44px);
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+    .header h1 em { font-style: normal; color: #ff3366; }
+
+    .header-sub {
+      font-size: 14px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.32);
+      line-height: 1.7;
+    }
+
+    /* ─── TABS ─── */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 8px 16px;
+      border-radius: 4px;
+      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.35);
+      cursor: pointer;
+      transition: all 0.18s;
+      background: transparent;
+    }
+
+    .tab:hover { border-color: rgba(255,255,255,0.22); color: rgba(255,255,255,0.65); }
+
+    .tab.active {
+      background: rgba(255,51,102,0.12);
+      border-color: rgba(255,51,102,0.35);
+      color: rgba(255,100,140,0.9);
+    }
+
+    /* ─── SECTIONS ─── */
+    .section { display: none; flex-direction: column; gap: 20px; }
+    .section.active { display: flex; }
+
+    .section-label {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: rgba(255,255,255,0.2);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    /* ─── PROMPT CARD ─── */
+    .prompt-card {
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 14px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .prompt-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      gap: 12px;
+    }
+
+    .prompt-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.75);
+    }
+
+    .prompt-tag {
+      font-family: 'Cinzel', serif;
+      font-size: 8px;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.22);
+      border: 1px solid rgba(255,255,255,0.09);
+      padding: 2px 8px;
+      border-radius: 2px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .copy-btn {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.35);
+      font-family: 'Heebo', sans-serif;
+      font-size: 12px;
+      padding: 5px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.18s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .copy-btn:hover { background: rgba(255,255,255,0.09); color: rgba(255,255,255,0.7); }
+    .copy-btn.copied { border-color: rgba(255,51,102,0.35); color: #ff3366; }
+
+    .prompt-body {
+      padding: 18px 20px;
+      font-size: 13px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.38);
+      line-height: 1.85;
+      white-space: pre-wrap;
+      max-height: 220px;
+      overflow: hidden;
+      position: relative;
+      transition: max-height 0.4s ease;
+    }
+
+    .prompt-body.expanded { max-height: 3000px; }
+
+    .prompt-body:not(.expanded)::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 60px;
+      background: linear-gradient(to bottom, transparent, rgba(8,10,14,0.95));
+    }
+
+    .expand-btn {
+      display: block;
+      text-align: center;
+      padding: 12px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.25);
+      cursor: pointer;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      transition: color 0.18s;
+      background: none;
+      border-left: none;
+      border-right: none;
+      border-bottom: none;
+      width: 100%;
+      font-family: 'Heebo', sans-serif;
+    }
+
+    .expand-btn:hover { color: rgba(255,255,255,0.55); }
+
+    /* back btn */
+    .back-btn {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 16px;
+      height: 36px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.45);
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+      z-index: 100;
+    }
+    .back-btn:hover {
+      background: rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.85);
+      border-color: rgba(255,255,255,0.22);
+    }
+
+    /* sound */
+    .sound-btn {
+      position: fixed;
+      bottom: 28px;
+      left: 28px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.4);
+      font-size: 15px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      backdrop-filter: blur(8px);
+      transition: background 0.2s;
+    }
+    .sound-btn.playing { border-color: rgba(255,51,102,0.4); color: #ff3366; }
+  </style>
+</head>
+<body>
+
+  <div class="bg">
+    <video autoplay muted loop playsinline>
+      <source src="bg.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <a class="back-btn" href="index.html">← ארגז הכלים</a>
+
+  <div class="page">
+
+    <a class="back" href="index.html">← ארגז הכלים</a>
+
+    <div class="header">
+      <div class="header-eyebrow">The Tribe · Lives Archive</div>
+      <h1>מה אלה<br /><em>הראתה בלייבים</em></h1>
+      <p class="header-sub">פרומפטים, כלים ומשאבים מהמפגשים — מסודרים לפי נושא.</p>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('video1')">וידאו · לייב I</button>
+      <button class="tab" onclick="showTab('shanachadasha')">שנה חדשה</button>
+      <button class="tab" onclick="showTab('prompts')">פרומפטים</button>
+      <button class="tab" onclick="showTab('poke')">Poke</button>
+    </div>
+
+    <!-- ─── וידאו לייב I ─── -->
+    <div class="section active" id="video1">
+
+      <div class="section-label">לייב וידאו · מפגש ראשון</div>
+
+      <!-- פרומפט ויז'ואל לדמות -->
+      <div class="prompt-card">
+        <div class="prompt-head">
+          <span class="prompt-title">פרומפט ויז'ואל לדמות</span>
+          <span class="prompt-tag">GPT / Claude</span>
+          <button class="copy-btn" onclick="copyPrompt(this, 'visual-char')">העתיקי</button>
+        </div>
+        <div class="prompt-body" id="visual-char">אני מעצב/ת את הדמות הראשית לפרויקט וידאו.
+הנה התיאור הבסיסי שלי:
+
+הדמות היא בת/בן ___
+מבנה גוף ___
+שיער ___
+תווי פנים ___
+הלבוש ___
+מאפיינים או אביזרים מיוחדים ___
+
+עזור לי להפוך את זה לתיאור ויזואלי ברור וקולנועי.
+עשה שני דברים:
+
+1. אם חסר מידע חשוב על הדמות, שאל אותי עד 3 שאלות קצרות שיעזרו לדייק אותה.
+2. לאחר מכן כתוב תיאור קצר של הדמות (1–2 משפטים) שמעביר דימוי חזותי חד וברור, כאילו הוא מיועד לפרומפט ליצירת תמונה.
+
+התיאור צריך להתמקד במראה החיצוני, הלבוש, האווירה והאנרגיה שהדמות משדרת.</div>
+        <button class="expand-btn" onclick="toggleExpand(this)">הצגי הכל ▼</button>
+      </div>
+
+      <!-- Character Bible -->
+      <div class="prompt-card">
+        <div class="prompt-head">
+          <span class="prompt-title">Character Bible — פיתוח דמות עמוק</span>
+          <span class="prompt-tag">GPT / Claude</span>
+          <button class="copy-btn" onclick="copyPrompt(this, 'char-bible')">העתיקי</button>
+        </div>
+        <div class="prompt-body" id="char-bible">אתה מומחה לפיתוח דמויות קולנועיות עם 20 שנות ניסיון בהוליווד.
+
+בנה Character Bible מלא לדמות הבאה: [שם / תפקיד / תיאור קצר]
+הדמות קיימת בעולם הבא: [ז'אנר / סטינג / טון — לדוגמה: "דרמה משפחתית עכשווית בתל אביב"]
+
+ענה על כל סעיף עם עומק ודיוק. חשוב כמו במאי שצריך לקסט, לצלם ולהניע את הדמות מהסצנה הראשונה עד הפריים האחרון.
+
+סעיף 1 — זהות וחיצוניות (מה שהמצלמה רואה)
+- שם מלא, טווח גיל, מגדר, רקע תרבותי
+- מקצוע ומעמד סוציו-אקונומי
+- תיאור פיזי: גוף, סימנים מזהים, איך הם נושאים את עצמם
+- חתימה ויזואלית: מה הם לובשים ומה זה מגלה עליהם
+- פרופ (אביזר) אחד שהמצלמה תחזור אליו
+
+סעיף 2 — פסיכולוגיה (החיים הפנימיים)
+- איך הם רואים את עצמם לעומת איך שאחרים רואים אותם?
+- מה המצב הרגשי הדומיננטי מתחת למסכה הציבורית?
+- 2-3 סתירות מגדירות
+- אילו מנגנוני הגנה הם מסתמכים עליהם?
+- מה מפורר את המסכה שלהם?
+
+סעיף 3 — הפצע (The Ghost)
+- מה האירוע המעצב היחיד מהעבר?
+- נעשה להם / על ידם / הם היו עדים לו?
+- מה הם סיפרו לעצמם על האירוע כדי לשרוד?
+
+סעיף 4 — השקר (The Lie)
+- במשפט אחד: מה האמונה השגויה שהדמות מחזיקה?
+- איך השקר מגן עליהם? מה יקרה אם יתפורר?
+- איך הוא מתבטא בהתנהגות שמחבלת בהם?
+
+סעיף 5 — רצון מול צורך (Want vs. Need)
+- WANT: מה הדמות רודפת אחריו באופן מודע?
+- NEED: מה הם באמת צריכים?
+- איפה ה-Want וה-Need מתנגשים?
+
+סעיף 6 — הקשת (The Arc)
+- איפה הם מתחילים רגשית ופסיכולוגית?
+- מה ה-Catalyst שמפר את עולמם?
+- מה רגע האמת?
+- מה הבחירה הקלימקטית?
+- איפה הם מסיימים?
+
+סעיף 7 — קשרים
+- הקשר החשוב ביותר ומה הוא מגלה עליהם
+- הקשר שלהם לכוח
+
+סעיף 8 — קול ודיאלוג
+- איך הם מדברים?
+- מה הם לעולם לא אומרים ישירות?
+- 3 שורות דיאלוג שיכולות לבוא רק מהדמות הזו
+
+סעיף 9 — הערות קולנועיות
+- שפה ויזואלית שהדמות דורשת
+- פלטת צבעים ואיך היא משתנה
+- תאורה
+- בחירת עדשה
+- 2-3 סרטי ייחוס
+- הוראות קסטינג
+- תמונה אחת שמייצגת את כל קשת הדמות</div>
+        <button class="expand-btn" onclick="toggleExpand(this)">הצגי הכל ▼</button>
+      </div>
+
+      <!-- Turnaround -->
+      <div class="prompt-card">
+        <div class="prompt-head">
+          <span class="prompt-title">דמות מכל הזוויות — Turnaround</span>
+          <span class="prompt-tag">Midjourney / Flux</span>
+          <button class="copy-btn" onclick="copyPrompt(this, 'turnaround')">העתיקי</button>
+        </div>
+        <div class="prompt-body" id="turnaround">Photorealistic studio character turnaround of: [insert character description]
+The same person shown front, side, back and 3/4 view, full body.
+Professional studio photography, neutral background, consistent appearance across all angles, natural standing pose, highly detailed, cinematic realism.</div>
+        <button class="expand-btn" onclick="toggleExpand(this)">הצגי הכל ▼</button>
+      </div>
+
+      <!-- טריילר -->
+      <div class="prompt-card">
+        <div class="prompt-head">
+          <span class="prompt-title">בניית טריילר — 5 שלבים</span>
+          <span class="prompt-tag">GPT / Claude</span>
+          <button class="copy-btn" onclick="copyPrompt(this, 'trailer')">העתיקי</button>
+        </div>
+        <div class="prompt-body" id="trailer">מבנה הטריילר:
+עולם → בעיה → הסלמה → רגע שיא → טיזר
+
+---
+
+אני יוצר טריילר קצר לסרט.
+זה הרעיון של הסיפור (one-liner):
+[הדביקו כאן את הוואן ליין]
+
+עזור לי לבנות טריילר של כ-30–40 שניות.
+חלק את הטריילר ל-5 שלבים:
+
+1. רגע פתיחה שתופס את תשומת הלב (Hook)
+2. הצגת העולם והאווירה
+3. הצגת הסיטואציה של הסיפור
+4. הסלמה ומתח
+5. רגע שיא וסיום מסקרן
+
+לכל שלב הצע 1–2 שוטים חזותיים קצרים שמתארים מה רואים בפריים בצורה קולנועית וברורה, כאילו מדובר בסטוריבורד לסרט.
+
+בסוף הצג גם רשימה מסכמת של 8 שוטים חזקים מהטריילר.
+
+כל שוט צריך להיות מתואר בצורה ויזואלית כך שאפשר יהיה להשתמש בו ישירות כבסיס לפרומפט ליצירת תמונה או וידאו ב-AI.
+השאירו את התיאורים קצרים, ברורים וקולנועיים.</div>
+        <button class="expand-btn" onclick="toggleExpand(this)">הצגי הכל ▼</button>
+      </div>
+
+    </div>
+
+    <!-- ─── שנה חדשה ─── -->
+    <div class="section" id="shanachadasha">
+
+
+      <div class="prompt-card">
+        <div class="prompt-head">
+          <span class="prompt-title">מניפסטינג לשנה 2026</span>
+          <span class="prompt-tag">GPT / Claude</span>
+          <button class="copy-btn" onclick="copyPrompt(this, 'manifesting')">העתיקי</button>
+        </div>
+        <div class="prompt-body" id="manifesting">את/ה כותב/ת עבורי מניפסטינג לשנה 2026 בסגנון של מאמן/ת מוטיבציה כריזמטי/ת, אנרגטי/ת ומעורר/ת השראה, עם טון מעשי-אופטימי ונגיעות של שפה תודעתית/נוירו-התנהגותית, קרקעי ויישים. אישי, רגשי, אבל בלי קלישאות ובלי הבטחות קסם. זה צריך להרגיש עוצמתי.
+
+מטרה: לייצר טקסט שאפשר לקרוא כל בוקר במשך 3–5 דקות, שמכוון את התודעה, מחזק זהות, מעורר רגש, ומסתיים בתוכנית פעולה קצרה.
+
+לפני הכתיבה — אם חסר מידע קריטי, שאל/י עד 6 שאלות קצרות בלבד. אם אין תשובות, הנח/י הנחות סבירות וכתוב/כתבי גרסה כללית שאפשר להתאים.
+
+מלא/י מה שידוע לך:
+- מי אני במשפט:
+- 3 ערכים מובילים השנה:
+- 3 תחומים מרכזיים לשדרוג: בריאות / כסף / קריירה / זוגיות / משפחה / רוח / חברים / יצירה
+- 3 מטרות מדידות לשנה:
+- הרגל בוקר רצוי:
+- הרגל ערב רצוי:
+- אמונה מגבילה שאני רוצה לשחרר:
+- זהות חדשה שאני בוחר/ת: "אני אדם ש..."
+- 3 רגשות שאני רוצה להרגיש יותר השנה:
+- גבולות / מה אני מפסיק/ה להסכים לו:
+- "מחיר הישן" מול "רווח החדש" בקצרה:
+
+מבנה:
+A. פתיחה עוצמתית (4–6 שורות)
+B. החזון: יום בחיים שלי השנה (10–14 שורות)
+C. תחומי חיים (3–5 פסקאות קצרות)
+D. הצהרות זהות "אני..." (רשימה)
+E. כשקשה לי: חזרה למסלול (תסריט קצר)
+F. עוגנים ופעולות (יומי / שבועי / 90 יום)
+G. הכרת תודה + חתימה
+
+אורך: 450–750 מילים. שפה: עברית טבעית, חזקה, לא מתנשאת.
+בסוף — תן/י גם גרסת "מיקרו" של 90–120 מילים לקריאה מהירה.</div>
+        <button class="expand-btn" onclick="toggleExpand(this)">הצגי הכל ▼</button>
+      </div>
+
+      <div class="prompt-card">
+        <div class="prompt-head">
+          <span class="prompt-title">מוד בורד ויזואלי לשנה</span>
+          <span class="prompt-tag">GPT / Claude</span>
+          <button class="copy-btn" onclick="copyPrompt(this, 'moodboard')">העתיקי</button>
+        </div>
+        <div class="prompt-body" id="moodboard">את/ה מומחה/ית לארט-דיירקשן ולמיתוג אישי. המטרה: להפוך את המניפסטינג שלי לשנה הקרובה ל-Mood Board ויזואלי שמרגיש מדויק, מעורר רגש, ומכוון פעולה.
+
+קלט (הדבק/י):
+1. המניפסטינג המלא (או תקציר 8–12 שורות): [הדבק/י כאן]
+2. 3 מילים שמגדירות את השנה שלי: [ ]
+3. 3 רגשות שאני רוצה להרגיש השנה: [ ]
+4. 3 תחומי חיים מרכזיים (למשל: בריאות / קריירה / זוגיות): [ ]
+5. אסתטיקה מועדפת: מינימליסטי / יוקרתי / טבעי / אורבני / עתידני / בוהו / ספורטיבי / אמנותי / אחר: [ ]
+6. מה "לא" — צבעים/סגנונות שממש לא מתאימים לי: [ ]
+
+משימה:
+א. חלץ/י מהמניפסטינג "רכיבי ויז'ן":
+- 8–12 מילות מפתח ויזואליות
+- 5 סמלים/אובייקטים שיחזרו במוד-בורד
+- 4 סצנות/רגעים קונקרטיים מהחיים השנה
+- 3 ערכי-על שצריכים להיות מורגשים בעיצוב
+
+ב. מפרט Mood Board:
+1. צבעוניות: פלטה של 5 צבעים עם תיאור רגש + חלוקה (Primary / Secondary / Accent)
+2. טייפוגרפיה: 2 סגנונות פונטים מומלצים
+3. טקסטורות וחומרים: 6–8
+4. סגנון צילום: תאורה, עומק שדה, גרעיניות, קונטרסט
+5. קומפוזיציה: איך לבנות קולאז', יחס תמונות, איזון בין "חלום" ל"פעולה"
+6. 6 כללי Do/Don't לשמירה על עקביות
+
+ג. 3 וריאציות Mood Board:
+- וריאציה 1: "רגועה ומינימליסטית"
+- וריאציה 2: "נועזת ואנרגטית"
+- וריאציה 3: "חמה וטבעית"
+
+ד. פרומפטים מוכנים למחולל תמונה:
+- פרומפט לכל Mood Board (סה"כ 3)
+- 6 פרומפטים נוספים: 2 סצנות בוקר, 2 סצנות עשייה/עבודה, 1 סצנת גוף/בריאות, 1 סצנת שקט/הודיה
+- בכל פרומפט: סגנון, תאורה, צבעוניות, קומפוזיציה, רמת ריאליזם
+- ללא טקסט בתוך התמונה</div>
+        <button class="expand-btn" onclick="toggleExpand(this)">הצגי הכל ▼</button>
+      </div>
+
+    </div>
+
+    <!-- ─── פרומפטים ─── -->
+    <div class="section" id="prompts">
+      <p style="color:rgba(255,255,255,0.25); font-size:14px; font-weight:300; padding: 20px 0;">פרומפטים נוספים יתווספו בהמשך.</p>
+    </div>
+
+    <!-- ─── POKE ─── -->
+    <div class="section" id="poke">
+
+      <div class="prompt-card">
+        <div class="prompt-head">
+          <span class="prompt-title">Poke — צ'ק-אין דו-שבועי חכם</span>
+          <span class="prompt-tag">GPT / Claude</span>
+          <button class="copy-btn" onclick="copyPrompt(this, 'poke')">העתיקי</button>
+        </div>
+        <div class="prompt-body" id="poke">המטרה שלך: לעזור לי להתקדם במטרה/משימה אחת או יותר באמצעות צ'ק-אין דו-שבועי, תזכורות חכמות, חיזוק וניתוח התקדמות אוטומטי.
+
+כללים:
+1. נהל "יומן התקדמות" דיגיטלי: בכל עדכון סכם מה השתנה, מה נעשה, ומה הצעד הבא.
+2. תדירות: פעם ב-14 ימים לצ'ק-אין מלא + תזכורות קצרות שבועיות לפי הצורך.
+3. בכל צ'ק-אין התאם את המסר לקצב ההתקדמות:
+   - התקדמות גבוהה: חיזוק + יעד הבא מאתגר + הצעות לשימור מומנטום.
+   - התקדמות בינונית: חיזוק + צעד מרכזי אחד לשבועיים + פישוט.
+   - תקיעות: אמפתיה + הורדת חסמים + צעד מיקרו של 2-10 דקות.
+4. הזכר תמיד את ה"למה" שלי במילים שלי.
+5. הצע תמיד "צעד קטן" שאפשר להתחיל מיד — ברור, קצר ומדיד.
+6. שאל שאלות רק כשהכרחי — אם חסר מידע, הצע אפשרויות בחירה מהירה.
+
+יתרונות Poke לניצול:
+- אוטומציה: הגדר תזכורות חכמות ושלב עם היומן שלי.
+- ניתוח: חפש במיילים שלי ראיות להתקדמות.
+
+---
+
+כדי להתחיל — ספר/י לי:
+1. מה המטרה / המשימה שלך?
+2. מהו ה"למה" שלה — מדוע היא חשובה לך?
+3. מהו הצעד הבא שכבר יודע/ת שצריך לעשות?</div>
+        <button class="expand-btn" onclick="toggleExpand(this)">הצגי הכל ▼</button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <button class="sound-btn" id="soundBtn" onclick="toggleSound()"><span id="soundIcon">♪</span></button>
+  <audio id="ambient" src="ambient.mp3" loop></audio>
+
+  <script>
+    function showTab(id, btn) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      if (btn) btn.classList.add('active');
+      else document.querySelectorAll('.tab').forEach(t => {
+        if (t.getAttribute('onclick').includes(id)) t.classList.add('active');
+      });
+    }
+
+    // open tab from URL param
+    const urlTab = new URLSearchParams(location.search).get('tab');
+    if (urlTab) showTab(urlTab);
+
+    function toggleExpand(btn) {
+      const body = btn.previousElementSibling;
+      body.classList.toggle('expanded');
+      btn.textContent = body.classList.contains('expanded') ? 'הסתרי ▲' : 'הצגי הכל ▼';
+    }
+
+    function copyPrompt(btn, id) {
+      const text = document.getElementById(id).textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '✓ הועתק';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'העתיקי';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+
+    // sound
+    const audio = document.getElementById('ambient');
+    const btn = document.getElementById('soundBtn');
+    const icon = document.getElementById('soundIcon');
+
+    function startOnInteraction() {
+      audio.play().then(() => { btn.classList.add('playing'); icon.textContent = '♫'; });
+      document.removeEventListener('click', startOnInteraction);
+      document.removeEventListener('touchstart', startOnInteraction);
+    }
+    document.addEventListener('click', startOnInteraction);
+    document.addEventListener('touchstart', startOnInteraction);
+
+    function toggleSound() {
+      if (audio.paused) { audio.play(); btn.classList.add('playing'); icon.textContent = '♫'; }
+      else { audio.pause(); btn.classList.remove('playing'); icon.textContent = '♪'; }
+    }
+  </script>
+
+</body>
+</html>

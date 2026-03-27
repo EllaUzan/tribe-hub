@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ארגז הכלים של השבט</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Heebo:wght@200;300;400;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      font-family: 'Heebo', sans-serif;
+      overflow: hidden;
+      background: #000;
+    }
+
+    /* ─── BG ─── */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .bg video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+
+    .bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to right, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.2) 55%, rgba(0,0,0,0.05) 100%),
+        linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 40%);
+      z-index: 1;
+    }
+
+    /* ─── LAYOUT ─── */
+    .layout {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      height: 100vh;
+      width: 100vw;
+      align-items: center;
+    }
+
+    /* ─── PANEL — floating text, right side (RTL) ─── */
+    .panel {
+      width: 300px;
+      flex-shrink: 0;
+      height: 100%;
+      padding: 52px 40px;
+      display: flex;
+      flex-direction: column;
+      /* no background — floats over image */
+    }
+
+    /* ─── LOGO ─── */
+    .logo {
+      margin-bottom: 56px;
+    }
+
+    .logo-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 0.28em;
+      color: rgba(255,255,255,0.28);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .logo-title {
+      font-size: 22px;
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+    }
+
+    .logo-title em {
+      font-style: normal;
+      color: #ff3366;
+    }
+
+    /* ─── DIVIDER ─── */
+    .divider {
+      width: 32px;
+      height: 1px;
+      background: rgba(255,255,255,0.18);
+      margin-bottom: 40px;
+    }
+
+    /* ─── NAV ─── */
+    .nav {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    /* Category */
+    .nav-group { margin-bottom: 8px; }
+
+    .nav-cat {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      padding: 10px 0;
+      cursor: pointer;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      transition: border-color 0.2s;
+      user-select: none;
+    }
+
+    .nav-cat:hover { border-color: rgba(255,255,255,0.18); }
+    .nav-cat.open  { border-color: rgba(255,255,255,0.18); }
+
+    .nav-cat-num {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      color: rgba(255,255,255,0.22);
+      letter-spacing: 0.1em;
+      min-width: 20px;
+      flex-shrink: 0;
+    }
+
+    .nav-cat.open .nav-cat-num { color: #ff3366; }
+
+    .nav-cat-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.75);
+      letter-spacing: 0.02em;
+      flex: 1;
+      transition: color 0.2s;
+    }
+
+    .nav-cat:hover .nav-cat-name,
+    .nav-cat.open .nav-cat-name { color: #fff; }
+
+    .nav-chevron {
+      font-size: 9px;
+      color: rgba(255,255,255,0.18);
+      transition: transform 0.22s, color 0.2s;
+    }
+
+    .nav-cat.open .nav-chevron {
+      transform: rotate(180deg);
+      color: rgba(255,255,255,0.35);
+    }
+
+    /* Sub-items */
+    .nav-sub {
+      display: none;
+      flex-direction: column;
+      padding: 6px 0 10px 32px;
+      gap: 2px;
+    }
+
+    .nav-cat.open + .nav-sub { display: flex; }
+
+    .nav-sub-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 0;
+      text-decoration: none;
+      color: rgba(255,255,255,0.38);
+      font-size: 13px;
+      font-weight: 300;
+      letter-spacing: 0.02em;
+      transition: color 0.18s;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .nav-sub-item:last-child { border-bottom: none; }
+    .nav-sub-item:hover { color: rgba(255,255,255,0.85); }
+
+    .nav-sub-dot {
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      flex-shrink: 0;
+    }
+
+    .nav-sub-item:hover .nav-sub-dot { background: #ff3366; }
+
+    .nav-sub-arrow {
+      margin-right: auto;
+      font-size: 10px;
+      color: rgba(255,255,255,0.15);
+      transition: color 0.18s;
+    }
+
+    .nav-sub-item:hover .nav-sub-arrow { color: rgba(255,255,255,0.4); }
+
+    /* badge */
+    .nav-badge {
+      font-family: 'Cinzel', serif;
+      font-size: 8px;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 2px 8px;
+      border-radius: 2px;
+    }
+
+    .nav-cat.disabled {
+      opacity: 0.38;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    /* ─── FOOTER ─── */
+    .footer {
+      margin-top: auto;
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      color: rgba(255,255,255,0.16);
+      text-transform: uppercase;
+      line-height: 1.8;
+    }
+
+    /* ─── SOUND BUTTON ─── */
+    .sound-btn {
+      position: fixed;
+      bottom: 28px;
+      left: 28px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.4);
+      font-size: 15px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, color 0.2s;
+      z-index: 10;
+      backdrop-filter: blur(8px);
+    }
+
+    .sound-btn:hover {
+      background: rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.8);
+    }
+
+    .sound-btn.playing {
+      border-color: rgba(255,51,102,0.4);
+      color: #ff3366;
+    }
+
+    /* ─── MOBILE ─── */
+    @media (max-width: 600px) {
+      html, body { overflow: auto; }
+      .bg::after {
+        background: rgba(0,0,0,0.7);
+      }
+      .layout {
+        height: auto;
+        min-height: 100vh;
+        align-items: flex-start;
+      }
+      .panel {
+        width: 100%;
+        padding: 44px 28px 48px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg">
+    <video autoplay muted loop playsinline>
+      <source src="bg.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <div class="layout">
+    <div class="panel">
+
+      <div class="logo">
+        <div class="logo-eyebrow">The Tribe · AI</div>
+        <div class="logo-title">ארגז הכלים<br /><em>של השבט</em></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <nav class="nav">
+
+        <!-- ברוכות הבאות -->
+        <div class="nav-group">
+          <a class="nav-cat" href="welcome.html" style="text-decoration:none;">
+            <span class="nav-cat-num" style="color: rgba(255,51,102,0.6);">✦</span>
+            <span class="nav-cat-name" style="color: rgba(255,255,255,0.9);">רגע לפני שמתחילים</span>
+            <span class="nav-chevron" style="font-size:11px">←</span>
+          </a>
+        </div>
+
+        <!-- איך זה עובד -->
+        <div class="nav-group">
+          <a class="nav-cat" href="groups.html" style="text-decoration:none;">
+            <span class="nav-cat-num">I</span>
+            <span class="nav-cat-name">איך זה עובד?</span>
+            <span class="nav-chevron" style="font-size:11px">←</span>
+          </a>
+        </div>
+
+        <!-- מדריכים -->
+        <div class="nav-group">
+          <div class="nav-cat open" onclick="toggle(this)">
+            <span class="nav-cat-num">II</span>
+            <span class="nav-cat-name">מדריכים</span>
+            <span class="nav-chevron">▼</span>
+          </div>
+          <div class="nav-sub">
+            <a class="nav-sub-item" href="https://ellauzan.github.io/midjourney-v8-guide/" target="_blank">
+              <span class="nav-sub-dot"></span>
+              מידג'רני V8
+              <span class="nav-sub-arrow">↗</span>
+            </a>
+            <a class="nav-sub-item" href="https://ellauzan.github.io/flow-brush-guide/" target="_blank">
+              <span class="nav-sub-dot"></span>
+              Flow Brush
+              <span class="nav-sub-arrow">↗</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- מהלייבים -->
+        <div class="nav-group">
+          <div class="nav-cat" onclick="toggle(this)">
+            <span class="nav-cat-num">III</span>
+            <span class="nav-cat-name">מהלייבים</span>
+            <span class="nav-chevron">▼</span>
+          </div>
+          <div class="nav-sub">
+            <a class="nav-sub-item" href="lives.html?tab=shanachadasha">
+              <span class="nav-sub-dot"></span>
+              שנה חדשה
+              <span class="nav-sub-arrow">↗</span>
+            </a>
+            <a class="nav-sub-item" href="lives.html?tab=prompts">
+              <span class="nav-sub-dot"></span>
+              פרומפטים
+              <span class="nav-sub-arrow">↗</span>
+            </a>
+            <a class="nav-sub-item" href="lives.html?tab=poke">
+              <span class="nav-sub-dot"></span>
+              Poke
+              <span class="nav-sub-arrow">↗</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- משאלות -->
+        <div class="nav-group">
+          <a class="nav-cat" href="wishes.html" style="text-decoration:none;">
+            <span class="nav-cat-num">IV</span>
+            <span class="nav-cat-name">מה את רוצה ללמוד?</span>
+            <span class="nav-chevron" style="font-size:11px">←</span>
+          </a>
+        </div>
+
+        <!-- מתי נפגשים -->
+        <div class="nav-group">
+          <a class="nav-cat" href="meetings.html" style="text-decoration:none;">
+            <span class="nav-cat-num">V</span>
+            <span class="nav-cat-name">מתי נפגשים?</span>
+            <span class="nav-chevron" style="font-size:11px">←</span>
+          </a>
+        </div>
+
+        <!-- עבודות השבט -->
+        <div class="nav-group">
+          <a class="nav-cat" href="https://drive.google.com/drive/folders/1UVieOWrF2bzrQ-BjEs8m82_Zs6CV8nvV?usp=drive_link" target="_blank" style="text-decoration:none;">
+            <span class="nav-cat-num">VI</span>
+            <span class="nav-cat-name">עבודות השבט</span>
+            <span class="nav-chevron" style="font-size:11px">↗</span>
+          </a>
+        </div>
+
+        <!-- כלי עזר -->
+        <div class="nav-group">
+          <div class="nav-cat" onclick="toggle(this)">
+            <span class="nav-cat-num">VII</span>
+            <span class="nav-cat-name">כלי עזר</span>
+            <span class="nav-chevron">▼</span>
+          </div>
+          <div class="nav-sub">
+            <a class="nav-sub-item" href="https://ellauzan.github.io/assi-describer/" target="_blank">
+              <span class="nav-sub-dot"></span>
+              אסי התאורן
+              <span class="nav-sub-arrow">↗</span>
+            </a>
+          </div>
+        </div>
+
+      </nav>
+
+      <div class="footer">
+        Ella Uzan · 2025
+      </div>
+
+      <!-- Sound toggle -->
+      <button class="sound-btn" id="soundBtn" onclick="toggleSound()" title="מוזיקה">
+        <span id="soundIcon">♪</span>
+      </button>
+      <audio id="ambient" src="ambient.mp3" loop></audio>
+
+    </div>
+  </div>
+
+  <script>
+    function toggle(el) {
+      document.querySelectorAll('.nav-cat.open').forEach(c => {
+        if (c !== el) c.classList.remove('open');
+      });
+      el.classList.toggle('open');
+    }
+
+    const audio = document.getElementById('ambient');
+    const btn = document.getElementById('soundBtn');
+    const icon = document.getElementById('soundIcon');
+
+    // autoplay on first interaction
+    function startOnInteraction() {
+      audio.play().then(() => {
+        btn.classList.add('playing');
+        icon.textContent = '♫';
+      });
+      document.removeEventListener('click', startOnInteraction);
+      document.removeEventListener('touchstart', startOnInteraction);
+    }
+
+    document.addEventListener('click', startOnInteraction);
+    document.addEventListener('touchstart', startOnInteraction);
+
+    function toggleSound() {
+      if (audio.paused) {
+        audio.play();
+        btn.classList.add('playing');
+        icon.textContent = '♫';
+      } else {
+        audio.pause();
+        btn.classList.remove('playing');
+        icon.textContent = '♪';
+      }
+    }
+  </script>
+
+</body>
+</html>

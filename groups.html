@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>הקבוצות · השבט</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Heebo:wght@200;300;400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100%;
+      font-family: 'Heebo', sans-serif;
+      background: #080a0e;
+      color: #fff;
+    }
+
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .bg video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.18;
+    }
+    .bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(8,10,14,0.6) 0%, rgba(8,10,14,0.2) 40%, rgba(8,10,14,0.92) 100%);
+      z-index: 1;
+    }
+
+    /* ─── BACK BTN ─── */
+    .back-btn {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 16px;
+      height: 36px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.45);
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      backdrop-filter: blur(10px);
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+      z-index: 100;
+    }
+    .back-btn:hover {
+      background: rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.85);
+      border-color: rgba(255,255,255,0.22);
+    }
+
+    /* ─── PAGE ─── */
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 80px 32px 100px;
+    }
+
+    /* ─── HEADER ─── */
+    .header { margin-bottom: 52px; }
+
+    .header-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      color: rgba(255,255,255,0.22);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .header h1 {
+      font-size: clamp(28px, 5vw, 44px);
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+    .header h1 em { font-style: normal; color: #ff3366; }
+
+    .header-sub {
+      font-size: 14px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.32);
+      line-height: 1.75;
+    }
+
+    /* ─── GROUPS ─── */
+    .groups {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .group-card {
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.02);
+      transition: border-color 0.2s;
+    }
+
+    .group-card:hover { border-color: rgba(255,255,255,0.12); }
+
+    .group-head {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 22px 24px 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .group-emoji {
+      font-size: 22px;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+    .group-info { flex: 1; }
+
+    .group-name {
+      font-size: 17px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 3px;
+    }
+
+    .group-tagline {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      color: rgba(255,255,255,0.25);
+      text-transform: uppercase;
+    }
+
+    .group-body {
+      padding: 20px 24px;
+    }
+
+    .group-desc {
+      font-size: 14px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.8;
+      margin-bottom: 16px;
+    }
+
+    .group-items {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .group-item {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.38);
+      line-height: 1.5;
+    }
+
+    .group-dot {
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: #ff3366;
+      flex-shrink: 0;
+      margin-top: 7px;
+    }
+
+    /* accent colors per card */
+    .group-card.main .group-head { border-bottom-color: rgba(255,255,255,0.06); }
+    .group-card.fire .group-emoji { filter: drop-shadow(0 0 6px rgba(255,120,30,0.4)); }
+    .group-card.share .group-emoji { filter: drop-shadow(0 0 6px rgba(100,180,255,0.3)); }
+
+    /* ─── NOTE ─── */
+    .note {
+      margin-top: 36px;
+      padding: 20px 24px;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.02);
+    }
+    .note p {
+      font-size: 13px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.35);
+      line-height: 1.8;
+    }
+
+    /* ─── SOUND ─── */
+    .sound-btn {
+      position: fixed;
+      bottom: 28px;
+      left: 28px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.4);
+      font-size: 15px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, color 0.2s;
+      z-index: 10;
+      backdrop-filter: blur(8px);
+    }
+    .sound-btn:hover { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.8); }
+    .sound-btn.playing { border-color: rgba(255,51,102,0.4); color: #ff3366; }
+
+    @media (max-width: 600px) {
+      .page { padding: 72px 20px 80px; }
+      .group-head { padding: 18px 18px 14px; }
+      .group-body { padding: 16px 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg">
+    <video autoplay muted loop playsinline>
+      <source src="bg.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <a class="back-btn" href="index.html">← ארגז הכלים</a>
+
+  <div class="page">
+
+    <div class="header">
+      <div class="header-eyebrow">The Tribe · Community</div>
+      <h1>איך<br /><em>זה עובד?</em></h1>
+      <p class="header-sub">השבט מתנהל ב-3 קבוצות ווטסאפ. לכל אחת תפקיד שונה — ביחד הן יוצרות את המרחב.</p>
+    </div>
+
+    <div class="groups">
+
+      <!-- קבוצה ראשית -->
+      <div class="group-card main">
+        <div class="group-head">
+          <div class="group-emoji">📣</div>
+          <div class="group-info">
+            <div class="group-name">הקבוצה הראשית</div>
+            <div class="group-tagline">Your Control Center</div>
+          </div>
+        </div>
+        <div class="group-body">
+          <p class="group-desc">הבית השקט. המקום המסודר. אין כאן רעש — רק מה שחשוב.</p>
+          <div class="group-items">
+            <div class="group-item"><span class="group-dot"></span>עדכונים והכרזות</div>
+            <div class="group-item"><span class="group-dot"></span>מועדי לייבים ולו"ז</div>
+            <div class="group-item"><span class="group-dot"></span>לינקים למפגשים וחומרים חדשים</div>
+            <div class="group-item"><span class="group-dot"></span>תכנים חשובים שלא רוצות לפספס</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- מסביב למדורה -->
+      <div class="group-card fire">
+        <div class="group-head">
+          <div class="group-emoji">🔥</div>
+          <div class="group-info">
+            <div class="group-name">מסביב למדורה</div>
+            <div class="group-tagline">The Conversation</div>
+          </div>
+        </div>
+        <div class="group-body">
+          <p class="group-desc">האזור הספונטני, החם, החופשי. פה מדברים, שואלים, משתפים — כל מה שבא.</p>
+          <div class="group-items">
+            <div class="group-item"><span class="group-dot"></span>שאלות על תרגילים וכלים</div>
+            <div class="group-item"><span class="group-dot"></span>השראות ספונטניות ושיחות פתוחות</div>
+            <div class="group-item"><span class="group-dot"></span>מאחורי הקלעים ודיונים</div>
+            <div class="group-item"><span class="group-dot"></span>הצחקות, התרגשויות, הכל</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Share Zone -->
+      <div class="group-card share">
+        <div class="group-head">
+          <div class="group-emoji">🤝</div>
+          <div class="group-info">
+            <div class="group-name">Share Zone</div>
+            <div class="group-tagline">Grow Together</div>
+          </div>
+        </div>
+        <div class="group-body">
+          <p class="group-desc">האזור שבו גדלים יחד. מעלות לינק ליצירה — השבט קופץ לתת אהבה.</p>
+          <div class="group-items">
+            <div class="group-item"><span class="group-dot"></span>שיתוף פוסטים, סרטונים, יצירות</div>
+            <div class="group-item"><span class="group-dot"></span>לייקים, תגובות, שיתופים הדדיים</div>
+            <div class="group-item"><span class="group-dot"></span>דחיפת האלגוריתם ביחד</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Claude Code Club -->
+      <div class="group-card">
+        <div class="group-head">
+          <div class="group-emoji">🤖</div>
+          <div class="group-info">
+            <div class="group-name">Claude Code Club</div>
+            <div class="group-tagline">Learn Together</div>
+          </div>
+        </div>
+        <div class="group-body">
+          <p class="group-desc">הקבוצה ללומדות קלוד קוד. שואלות, חופרות, מתקדמות — ביחד.</p>
+          <div class="group-items">
+            <div class="group-item"><span class="group-dot"></span>שאלות על הלמידה והתרגילים</div>
+            <div class="group-item"><span class="group-dot"></span>שיתוף תגליות וטריקים</div>
+            <div class="group-item"><span class="group-dot"></span>תמיכה הדדית בתהליך</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="note">
+      <p>שאלות, התלבטויות ושיתופים — תמיד בקבוצה ולא בפרטי. ככה אנחנו שומרות שכולן מקבלות את אותו המידע ואף אחת לא מפספסת.</p>
+    </div>
+
+  </div>
+
+  <button class="sound-btn" id="soundBtn" onclick="toggleSound()"><span id="soundIcon">♪</span></button>
+  <audio id="ambient" src="ambient.mp3" loop></audio>
+
+  <script>
+    const audio = document.getElementById('ambient');
+    const btn = document.getElementById('soundBtn');
+    const icon = document.getElementById('soundIcon');
+
+    function startOnInteraction() {
+      audio.play().then(() => { btn.classList.add('playing'); icon.textContent = '♫'; });
+      document.removeEventListener('click', startOnInteraction);
+      document.removeEventListener('touchstart', startOnInteraction);
+    }
+    document.addEventListener('click', startOnInteraction);
+    document.addEventListener('touchstart', startOnInteraction);
+
+    function toggleSound() {
+      if (audio.paused) { audio.play(); btn.classList.add('playing'); icon.textContent = '♫'; }
+      else { audio.pause(); btn.classList.remove('playing'); icon.textContent = '♪'; }
+    }
+  </script>
+
+</body>
+</html>

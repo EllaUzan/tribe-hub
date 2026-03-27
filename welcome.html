@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>רגע לפני שמתחילים · השבט</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Heebo:wght@200;300;400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100%;
+      font-family: 'Heebo', sans-serif;
+      background: #080a0e;
+      color: #fff;
+    }
+
+    /* ─── BG ─── */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .bg video.bg-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.18;
+    }
+
+    .bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(8,10,14,0.6) 0%, rgba(8,10,14,0.2) 40%, rgba(8,10,14,0.92) 100%);
+      z-index: 1;
+    }
+
+    /* ─── BACK BTN ─── */
+    .back-btn {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 16px;
+      height: 36px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.45);
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+      z-index: 100;
+    }
+    .back-btn:hover {
+      background: rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.85);
+      border-color: rgba(255,255,255,0.22);
+    }
+
+    /* ─── PAGE ─── */
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 80px 32px 100px;
+    }
+
+    /* ─── HEADER ─── */
+    .header {
+      margin-bottom: 48px;
+    }
+
+    .header-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      color: rgba(255,255,255,0.22);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .header h1 {
+      font-size: clamp(28px, 5vw, 44px);
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+
+    .header h1 em {
+      font-style: normal;
+      color: #ff3366;
+    }
+
+    .header-sub {
+      font-size: 14px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.32);
+      line-height: 1.75;
+    }
+
+    /* ─── VIDEO ─── */
+    .video-wrap {
+      position: relative;
+      width: 100%;
+      border-radius: 16px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      margin-bottom: 40px;
+    }
+
+    .video-wrap video {
+      width: 100%;
+      display: block;
+      border-radius: 16px;
+    }
+
+    /* ─── WELCOME TEXT ─── */
+    .welcome-text {
+      margin-bottom: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .welcome-text p {
+      font-size: 15px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.85;
+    }
+
+    .welcome-text-highlight {
+      font-size: 16px !important;
+      font-weight: 600 !important;
+      color: rgba(255,255,255,0.85) !important;
+    }
+
+    /* ─── NOTE ─── */
+    .note {
+      padding: 20px 24px;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .note p {
+      font-size: 14px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.38);
+      line-height: 1.8;
+    }
+
+    .note p + p { margin-top: 8px; }
+
+    /* ─── SOUND ─── */
+    .sound-btn {
+      position: fixed;
+      bottom: 28px;
+      left: 28px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.4);
+      font-size: 15px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, color 0.2s;
+      z-index: 10;
+      backdrop-filter: blur(8px);
+    }
+    .sound-btn:hover { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.8); }
+    .sound-btn.playing { border-color: rgba(255,51,102,0.4); color: #ff3366; }
+
+    @media (max-width: 600px) {
+      .page { padding: 72px 20px 80px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg">
+    <video class="bg-video" autoplay muted loop playsinline>
+      <source src="bg.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <a class="back-btn" href="index.html">← ארגז הכלים</a>
+
+  <div class="page">
+
+    <div class="header">
+      <div class="header-eyebrow">The Tribe · Welcome</div>
+      <h1>רגע לפני<br /><em>שמתחילים</em></h1>
+      <p class="header-sub">כמה מילים מאלה לפני שצוללות פנימה.</p>
+    </div>
+
+    <div class="video-wrap">
+      <video controls playsinline preload="metadata">
+        <source src="welcome.mp4" type="video/mp4">
+      </video>
+    </div>
+
+    <div class="welcome-text">
+      <p>ברוכות הבאות לשבט — המקום שבו כל אחת מביאה משהו אחר, וביחד זה הופך למשהו גדול ומדויק יותר.</p>
+      <p>אם את רואה יצירות מרשימות, שפה טכנית שלא פגשת, או דברים שנראים מתקדמים — תדעי שרוב האנשים כאן הרגישו בדיוק ככה בהתחלה. וברגע אחד זה הפסיק להפחיד, כי זו קהילה שמרימה ושומרת שכולן ירגישו חלק.</p>
+      <p>ואם עולה לך רגע של פומו — תני נשימה. השבט לא נמדד במהירות אלא בקשר שנבנה, בסקרנות, ובעבודה בקצב האישי שלך. אין דבר כזה מאוחר מדי.</p>
+      <p class="welcome-text-highlight">יש כאן בית, והוא מתרחב בזכותך.</p>
+    </div>
+
+    <div class="note">
+      <p>שאלות, התלבטויות ושיתופים — תמיד בקבוצה ולא בפרטי, כדי שהכל יגיע לכולן.</p>
+    </div>
+
+  </div>
+
+  <button class="sound-btn" id="soundBtn" onclick="toggleSound()"><span id="soundIcon">♪</span></button>
+  <audio id="ambient" src="ambient.mp3" loop></audio>
+
+  <script>
+    const audio = document.getElementById('ambient');
+    const btn = document.getElementById('soundBtn');
+    const icon = document.getElementById('soundIcon');
+
+    function startOnInteraction() {
+      audio.play().then(() => { btn.classList.add('playing'); icon.textContent = '♫'; });
+      document.removeEventListener('click', startOnInteraction);
+      document.removeEventListener('touchstart', startOnInteraction);
+    }
+    document.addEventListener('click', startOnInteraction);
+    document.addEventListener('touchstart', startOnInteraction);
+
+    function toggleSound() {
+      if (audio.paused) { audio.play(); btn.classList.add('playing'); icon.textContent = '♫'; }
+      else { audio.pause(); btn.classList.remove('playing'); icon.textContent = '♪'; }
+    }
+  </script>
+
+</body>
+</html>

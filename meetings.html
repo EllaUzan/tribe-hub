@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>מתי נפגשים · השבט</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Heebo:wght@200;300;400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100%;
+      font-family: 'Heebo', sans-serif;
+      background: #080a0e;
+      color: #fff;
+    }
+
+    /* ─── BG ─── */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .bg video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.35;
+    }
+
+    .bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to bottom, rgba(8,10,14,0.6) 0%, rgba(8,10,14,0.3) 40%, rgba(8,10,14,0.85) 100%);
+      z-index: 1;
+    }
+
+    /* ─── LAYOUT ─── */
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 60px 32px 100px;
+    }
+
+    /* ─── BACK ─── */
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      color: rgba(255,255,255,0.28);
+      text-decoration: none;
+      text-transform: uppercase;
+      margin-bottom: 52px;
+      transition: color 0.2s;
+    }
+
+    .back:hover { color: rgba(255,255,255,0.6); }
+
+    /* ─── HEADER ─── */
+    .header {
+      margin-bottom: 56px;
+    }
+
+    .header-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      color: rgba(255,255,255,0.25);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .header h1 {
+      font-size: clamp(30px, 5vw, 46px);
+      font-weight: 900;
+      line-height: 1.15;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+
+    .header h1 em {
+      font-style: normal;
+      color: #ff3366;
+    }
+
+    .header-sub {
+      font-size: 15px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.38);
+      line-height: 1.7;
+    }
+
+    /* ─── DIVIDER ─── */
+    .divider {
+      width: 40px;
+      height: 1px;
+      background: rgba(255,255,255,0.15);
+      margin: 40px 0;
+    }
+
+    /* ─── SECTION TITLE ─── */
+    .section-label {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: rgba(255,255,255,0.22);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    /* ─── EVENTS ─── */
+    .events {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .event {
+      display: grid;
+      grid-template-columns: 64px 1fr auto;
+      align-items: start;
+      gap: 20px;
+      padding: 20px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .event:last-child { border-bottom: none; }
+
+    .event.past { opacity: 0.38; }
+
+    .event-date {
+      text-align: center;
+    }
+
+    .event-day {
+      font-family: 'Cinzel', serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1;
+    }
+
+    .event-month {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      color: rgba(255,255,255,0.3);
+      text-transform: uppercase;
+      margin-top: 3px;
+    }
+
+    .event-time {
+      font-size: 11px;
+      color: rgba(255,255,255,0.25);
+      margin-top: 5px;
+    }
+
+    .event-content {}
+
+    .event-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .event-desc {
+      font-size: 13px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.38);
+      line-height: 1.6;
+    }
+
+    .event-tag {
+      display: inline-block;
+      font-family: 'Cinzel', serif;
+      font-size: 8px;
+      letter-spacing: 0.12em;
+      color: #ff3366;
+      border: 1px solid rgba(255,51,102,0.3);
+      padding: 2px 8px;
+      border-radius: 2px;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    /* cal button */
+    .cal-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.25);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 5px 11px;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: color 0.18s, border-color 0.18s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .cal-btn:hover {
+      color: rgba(255,255,255,0.7);
+      border-color: rgba(255,255,255,0.25);
+    }
+
+    /* ─── NOTE BOX ─── */
+    .note {
+      margin-top: 48px;
+      padding: 22px 24px;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+    }
+
+    .note p {
+      font-size: 14px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.42);
+      line-height: 1.8;
+    }
+
+    .note p + p { margin-top: 10px; }
+
+    .note a {
+      color: rgba(255,100,140,0.8);
+      text-decoration: none;
+    }
+
+    .note a:hover { color: #ff3366; }
+
+    /* ─── BACK BTN ─── */
+    .back-btn {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 16px;
+      height: 36px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.45);
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+      z-index: 100;
+    }
+    .back-btn:hover {
+      background: rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.85);
+      border-color: rgba(255,255,255,0.22);
+    }
+
+    /* ─── SOUND ─── */
+    .sound-btn {
+      position: fixed;
+      bottom: 28px;
+      left: 28px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.4);
+      font-size: 15px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, color 0.2s;
+      z-index: 10;
+      backdrop-filter: blur(8px);
+    }
+
+    .sound-btn:hover { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.8); }
+    .sound-btn.playing { border-color: rgba(255,51,102,0.4); color: #ff3366; }
+  </style>
+</head>
+<body>
+
+  <div class="bg">
+    <video autoplay muted loop playsinline>
+      <source src="bg.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <a class="back-btn" href="index.html">← ארגז הכלים</a>
+
+  <div class="page">
+
+    <a class="back" href="index.html">← ארגז הכלים</a>
+
+    <div class="header">
+      <div class="header-eyebrow">The Tribe · Schedule</div>
+      <h1>מתי<br /><em>נפגשים?</em></h1>
+      <p class="header-sub">ימי שלישי, שבוע כן שבוע לא, בשעה 20:00<br />לומדים וידאו יחד — צעד צעד ממש מהבסיס.</p>
+    </div>
+
+    <div class="section-label">מפגשים קרובים</div>
+
+    <div class="events">
+
+      <!-- לייב מיוחד — ראשון 29.3 -->
+      <div class="event">
+        <div class="event-date">
+          <div class="event-day">29</div>
+          <div class="event-month">מרץ</div>
+          <div class="event-time">10:00</div>
+        </div>
+        <div class="event-content">
+          <div class="event-tag">מיוחד</div>
+          <div class="event-title">לייב עם שחר פליישר</div>
+          <div class="event-desc">אמן דיגיטלי שעובד בחיבור בין סיפור פנימי, רגש, דימוי ובינה. כלי חינמי שהוא פיתח, שפה אחרת, גישה אחרת.</div>
+        </div>
+        <a class="cal-btn" href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=%D7%9C%D7%99%D7%99%D7%91+%D7%9E%D7%99%D7%95%D7%97%D7%93+%D7%A2%D7%9D+%D7%A9%D7%97%D7%A8+%D7%A4%D7%9C%D7%99%D7%99%D7%A9%D7%A8+%E2%80%A2+%D7%94%D7%A9%D7%91%D7%98&dates=20260329T070000Z%2F20260329T083000Z&details=%D7%9C%D7%99%D7%99%D7%91+%D7%9E%D7%99%D7%95%D7%97%D7%93+%D7%A2%D7%9D+%D7%A9%D7%97%D7%A8+%D7%A4%D7%9C%D7%99%D7%99%D7%A9%D7%A8" target="_blank">+ יומן</a>
+      </div>
+
+      <!-- לייב 14.4 -->
+      <div class="event">
+        <div class="event-date">
+          <div class="event-day">14</div>
+          <div class="event-month">אפריל</div>
+          <div class="event-time">20:00</div>
+        </div>
+        <div class="event-content">
+          <div class="event-title">לייב — וידאו עם AI</div>
+          <div class="event-desc">חזרה אחרי הפסקת פסח. ממשיכים מאיפה שעצרנו.</div>
+        </div>
+        <a class="cal-btn" href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=%D7%9C%D7%99%D7%99%D7%91+%D7%94%D7%A9%D7%91%D7%98+%E2%80%A2+%D7%95%D7%99%D7%93%D7%90%D7%95+%D7%A2%D7%9D+AI&dates=20260414T170000Z%2F20260414T183000Z&details=%D7%9C%D7%95%D7%9E%D7%93%D7%99%D7%9D+%D7%95%D7%99%D7%93%D7%90%D7%95+%D7%99%D7%97%D7%93+%E2%80%94+%D7%A6%D7%A2%D7%93+%D7%A6%D7%A2%D7%93+%D7%9E%D7%9E%D7%A9+%D7%9E%D7%94%D7%91%D7%A1%D7%99%D7%A1" target="_blank">+ יומן</a>
+      </div>
+
+      <!-- לייב 10.3 — עבר -->
+      <div class="event past">
+        <div class="event-date">
+          <div class="event-day">10</div>
+          <div class="event-month">מרץ</div>
+          <div class="event-time">20:00</div>
+        </div>
+        <div class="event-content">
+          <div class="event-title">לייב ראשון — וידאו עם AI</div>
+          <div class="event-desc">פתיחת הסבב.</div>
+        </div>
+        <span></span>
+      </div>
+
+      <!-- לייב 24.3 — עבר -->
+      <div class="event past">
+        <div class="event-date">
+          <div class="event-day">24</div>
+          <div class="event-month">מרץ</div>
+          <div class="event-time">20:00</div>
+        </div>
+        <div class="event-content">
+          <div class="event-title">לייב שני — וידאו עם AI</div>
+          <div class="event-desc">ממשיכים.</div>
+        </div>
+        <span></span>
+      </div>
+
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="note">
+      <p>אחרי הסבב הזה נפתח גם סבב מפגשי בוקר — למי שפחות אנשי לילה.</p>
+      <p>אם לא התחלתם לצפות בלייבים, צריכות תמיכה או עידוד — <a href="#">אסי פה</a>.</p>
+    </div>
+
+  </div>
+
+  <button class="sound-btn" id="soundBtn" onclick="toggleSound()"><span id="soundIcon">♪</span></button>
+  <audio id="ambient" src="ambient.mp3" loop></audio>
+
+  <script>
+    const audio = document.getElementById('ambient');
+    const btn = document.getElementById('soundBtn');
+    const icon = document.getElementById('soundIcon');
+
+    function startOnInteraction() {
+      audio.play().then(() => {
+        btn.classList.add('playing');
+        icon.textContent = '♫';
+      });
+      document.removeEventListener('click', startOnInteraction);
+      document.removeEventListener('touchstart', startOnInteraction);
+    }
+
+    document.addEventListener('click', startOnInteraction);
+    document.addEventListener('touchstart', startOnInteraction);
+
+    function toggleSound() {
+      if (audio.paused) {
+        audio.play();
+        btn.classList.add('playing');
+        icon.textContent = '♫';
+      } else {
+        audio.pause();
+        btn.classList.remove('playing');
+        icon.textContent = '♪';
+      }
+    }
+  </script>
+
+</body>
+</html>
