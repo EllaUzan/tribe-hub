@@ -299,9 +299,67 @@
     .sound-btn:hover { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.8); }
     .sound-btn.playing { border-color: rgba(255,51,102,0.4); color: #ff3366; }
 
+    /* ─── SREF GRID ─── */
+    .sref-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .sref-card {
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 14px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.02);
+      transition: border-color 0.2s;
+    }
+
+    .sref-card:hover { border-color: rgba(255,255,255,0.14); }
+
+    .sref-img {
+      width: 100%;
+      aspect-ratio: 3/4;
+      object-fit: cover;
+      display: block;
+    }
+
+    .sref-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      gap: 10px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .sref-code {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      color: rgba(255,255,255,0.70);
+    }
+
+    .sref-copy {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.65);
+      font-family: 'Heebo', sans-serif;
+      font-size: 11px;
+      padding: 4px 11px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.18s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .sref-copy:hover { background: rgba(255,255,255,0.09); color: rgba(255,255,255,0.7); }
+    .sref-copy.copied { border-color: rgba(255,51,102,0.35); color: #ff3366; }
+
     @media (max-width: 600px) {
       .page { padding: 72px 20px 80px; }
       .tip-head { flex-wrap: wrap; }
+      .sref-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
     }
   </style>
 </head>
@@ -332,7 +390,7 @@
         <div class="link-card-icon">📋</div>
         <div class="link-card-info">
           <div class="link-card-title">הטופס של השבט</div>
-          <div class="link-card-desc">עוזר לאלה לבנות תכנים מדויקים, להחליט על מועדי לייבים ולהתאים נושאים לקהילה.</div>
+          <div class="link-card-desc">כדי שאלה תכיר אתכם יותר טוב — מי אתם, מה מעניין אתכם, מה הרקע שלכם.</div>
         </div>
         <span class="link-card-arrow">↗</span>
       </a>
@@ -345,6 +403,47 @@
         </div>
         <span class="link-card-arrow">↗</span>
       </a>
+
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- sref codes -->
+    <div class="section-label">Sref — קודי סגנון ממידג'רני</div>
+
+    <div class="sref-grid">
+
+      <div class="sref-card">
+        <img class="sref-img" src="missed-imgs/sref-1215866110.jpg" alt="sref 1215866110" />
+        <div class="sref-footer">
+          <span class="sref-code">1215866110</span>
+          <button class="sref-copy" onclick="copySref(this, '--sref 1215866110')">העתיקי</button>
+        </div>
+      </div>
+
+      <div class="sref-card">
+        <img class="sref-img" src="missed-imgs/sref-2985411986.jpg" alt="sref 2985411986" />
+        <div class="sref-footer">
+          <span class="sref-code">2985411986</span>
+          <button class="sref-copy" onclick="copySref(this, '--sref 2985411986')">העתיקי</button>
+        </div>
+      </div>
+
+      <div class="sref-card">
+        <img class="sref-img" src="missed-imgs/sref-891667484-a.png" alt="sref 891667484" />
+        <div class="sref-footer">
+          <span class="sref-code">891667484 ★</span>
+          <button class="sref-copy" onclick="copySref(this, '--sref 891667484')">העתיקי</button>
+        </div>
+      </div>
+
+      <div class="sref-card">
+        <img class="sref-img" src="missed-imgs/sref-3786525916.jpg" alt="sref 3786525916" />
+        <div class="sref-footer">
+          <span class="sref-code">3786525916</span>
+          <button class="sref-copy" onclick="copySref(this, '--sref 3786525916')">העתיקי</button>
+        </div>
+      </div>
 
     </div>
 
@@ -390,23 +489,6 @@ Still from a movie "a woman walking barefoot on golden wheat fields at sunset" b
         <button class="expand-btn" onclick="toggleExpand(this)">הצגי הכל ▼</button>
       </div>
 
-      <!-- Sref אהוב -->
-      <div class="tip-card">
-        <div class="tip-head">
-          <span class="tip-title">Sref אהוב על אלה</span>
-          <span class="tip-tag">Midjourney · Sref</span>
-          <button class="copy-btn" onclick="copyTip(this, 'sref-fav')">העתיקי</button>
-        </div>
-        <div class="tip-body" id="sref-fav">--sref 891667484
-
-שמרי את הקוד הזה לאקסל שלך.
-מוסיפים אותו בסוף הפרומפט כדי לקבל את הסגנון הזה.
-
-דוגמה לשימוש:
-[הפרומפט שלך] --sref 891667484</div>
-        <button class="expand-btn" onclick="toggleExpand(this)">הצגי הכל ▼</button>
-      </div>
-
     </div>
 
   </div>
@@ -419,6 +501,14 @@ Still from a movie "a woman walking barefoot on golden wheat fields at sunset" b
       const body = btn.previousElementSibling;
       body.classList.toggle('expanded');
       btn.textContent = body.classList.contains('expanded') ? 'הסתרי ▲' : 'הצגי הכל ▼';
+    }
+
+    function copySref(btn, text) {
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '✓ הועתק';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'העתיקי'; btn.classList.remove('copied'); }, 2000);
+      });
     }
 
     function copyTip(btn, id) {
