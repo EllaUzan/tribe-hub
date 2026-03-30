@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>השבט נותן לך קול</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Heebo:wght@200;300;400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100%;
+      font-family: 'Heebo', sans-serif;
+      background: #080a0e;
+      color: #fff;
+    }
+
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .bg video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.25;
+    }
+
+    .bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(8,10,14,0.5) 0%, rgba(8,10,14,0.2) 40%, rgba(8,10,14,0.9) 100%);
+      z-index: 1;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 60px 32px 100px;
+    }
+
+    /* ─── BACK ─── */
+    .back-btn {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 16px;
+      height: 36px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.80);
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      backdrop-filter: blur(10px);
+      transition: background 0.2s, color 0.2s;
+      z-index: 10;
+    }
+    .back-btn:hover {
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+    }
+
+    /* ─── HEADER ─── */
+    .header { margin-bottom: 48px; margin-top: 20px; }
+
+    .header-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      color: rgba(255,255,255,0.60);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .header h1 {
+      font-size: clamp(28px, 5vw, 44px);
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 20px;
+    }
+
+    .header h1 em { font-style: normal; color: #ff3366; }
+
+    .header-body {
+      font-size: 15px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.80);
+      line-height: 1.85;
+    }
+
+    .header-body p { margin-bottom: 10px; }
+    .header-body p:last-child { margin-bottom: 0; }
+
+    .divider {
+      width: 40px;
+      height: 1px;
+      background: rgba(255,255,255,0.12);
+      margin: 40px 0;
+    }
+
+    /* ─── FORM ─── */
+    .form-title {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: rgba(255,255,255,0.85);
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+
+    form { display: flex; flex-direction: column; gap: 16px; }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .field { display: flex; flex-direction: column; gap: 7px; }
+
+    label {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      color: rgba(255,255,255,0.55);
+      text-transform: uppercase;
+    }
+
+    input, textarea {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: #fff;
+      font-family: 'Heebo', sans-serif;
+      font-size: 14px;
+      font-weight: 300;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+      width: 100%;
+      direction: rtl;
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: rgba(255,255,255,0.28);
+    }
+
+    input:focus, textarea:focus {
+      border-color: rgba(255,51,102,0.35);
+      background: rgba(255,255,255,0.06);
+    }
+
+    textarea { min-height: 130px; resize: vertical; }
+
+    .field-hint {
+      font-size: 11px;
+      color: rgba(255,255,255,0.35);
+      line-height: 1.5;
+    }
+
+    .submit-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: rgba(255,51,102,0.12);
+      border: 1px solid rgba(255,51,102,0.3);
+      color: rgba(255,100,140,0.9);
+      font-family: 'Heebo', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 13px 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+      align-self: flex-start;
+      margin-top: 6px;
+    }
+
+    .submit-btn:hover {
+      background: rgba(255,51,102,0.22);
+      border-color: rgba(255,51,102,0.5);
+      color: #fff;
+    }
+
+    .success-msg {
+      display: none;
+      padding: 20px 24px;
+      border: 1px solid rgba(255,51,102,0.2);
+      border-radius: 10px;
+      background: rgba(255,51,102,0.06);
+      color: rgba(255,160,180,0.9);
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 560px) {
+      .row { grid-template-columns: 1fr; }
+      .page { padding: 48px 20px 80px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg">
+    <video autoplay muted loop playsinline>
+      <source src="bg.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <a class="back-btn" href="index.html">← חזרה</a>
+
+  <div class="page">
+
+    <div class="header">
+      <div class="header-eyebrow">The Tribe · Live</div>
+      <h1>השבט נותן<br /><em>לך קול</em></h1>
+      <div class="header-body">
+        <p>יש לך תחום. שנים של ניסיון, כשלים, ניסיון מחדש.</p>
+        <p>יש לך משהו שאנשים שואלים אותך עליו בצד, בשקט, כי הם יודעים שאתה יודע.</p>
+        <p>בשבט אנחנו לא מחכים לאנשים מושלמים עם מצגות מוכנות.<br />אנחנו מחכים לאנשים אמיתיים עם ידע אמיתי.</p>
+        <p>אם יש לך נושא שמדגדג לך מאחורה — זה הרגע.<br />מלא את הטופס. אני אחזור אליך ונמצא לזה בית.</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="form-title">הגשת הצעה ללייב</div>
+
+    <form id="liveForm" action="https://formspree.io/f/xgvewqkz" method="POST">
+      <div class="row">
+        <div class="field">
+          <label for="first_name">שם פרטי</label>
+          <input type="text" id="first_name" name="first_name" placeholder="שם פרטי" required />
+        </div>
+        <div class="field">
+          <label for="last_name">שם משפחה</label>
+          <input type="text" id="last_name" name="last_name" placeholder="שם משפחה" required />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="email">מייל</label>
+        <input type="email" id="email" name="email" placeholder="your@email.com" dir="ltr" required />
+      </div>
+
+      <div class="field">
+        <label for="profession">מקצוע</label>
+        <input type="text" id="profession" name="profession" placeholder="מה את/ה עושה?" required />
+      </div>
+
+      <div class="field">
+        <label for="topic">על מה תרצה לדבר?</label>
+        <textarea id="topic" name="topic" placeholder="ספר/י כמה שיותר — על מה הלייב, מה תלמדו, מה הניסיון שלך בנושא, מה הפורמט שאת/ה מדמיין/ת..." required></textarea>
+        <span class="field-hint">ככל שתספר/י יותר — כך נוכל לתת לרעיון שלך את הבמה הנכונה</span>
+      </div>
+
+      <input type="hidden" name="_subject" value="הצעת לייב חדשה מהשבט 🔥" />
+      <input type="hidden" name="_replyto" value="" />
+
+      <button type="submit" class="submit-btn">שלח הצעה ←</button>
+
+      <div class="success-msg" id="successMsg">
+        תודה! קיבלתי את ההצעה שלך 🔥<br />
+        אחזור אליך בקרוב.
+      </div>
+    </form>
+
+  </div>
+
+  <script>
+    const form = document.getElementById('liveForm');
+    const success = document.getElementById('successMsg');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+      const res = await fetch(form.action, {
+        method: 'POST',
+        body: data,
+        headers: { 'Accept': 'application/json' }
+      });
+      if (res.ok) {
+        form.style.display = 'none';
+        success.style.display = 'block';
+      }
+    });
+  </script>
+
+</body>
+</html>
