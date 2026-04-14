@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>תמונות קולנועיות — שיעור 02</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@200;300;400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #F4F2ED;
+      --ink:     #191917;
+      --mid:     #6A6A62;
+      --faint:   #BDBDB4;
+      --gold:    #C4965A;
+      --dark:    #141412;
+      --code-fg: #E8E4DC;
+    }
+
+    html, body {
+      height: 100%; width: 100%;
+      font-family: 'Heebo', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      overflow: hidden;
+    }
+
+    /* ── grain overlay ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.025;
+      pointer-events: none;
+      z-index: 9998;
+    }
+
+    /* ── cinematic bars ── */
+    .bar { position: fixed; left: 0; right: 0; height: 4px; background: var(--ink); z-index: 9999; }
+    .bar.top    { top: 0; }
+    .bar.bottom { bottom: 0; }
+
+    /* ── slides ── */
+    #deck { position: relative; width: 100vw; height: 100vh; }
+
+    .slide {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 72px 10vw;
+      opacity: 0;
+      transition: opacity 0.55s ease;
+      pointer-events: none;
+    }
+    .slide.active { opacity: 1; pointer-events: auto; }
+
+    /* ── type scale ── */
+    .eyebrow {
+      font-size: 11px; font-weight: 500;
+      letter-spacing: .22em; text-transform: uppercase;
+      color: var(--faint); margin-bottom: 28px;
+    }
+    .eyebrow span { color: var(--gold); }
+
+    h1 {
+      font-size: clamp(44px, 7vw, 96px);
+      font-weight: 900; line-height: 1.0;
+      letter-spacing: -.03em;
+    }
+    h2 {
+      font-size: clamp(28px, 4vw, 56px);
+      font-weight: 700; line-height: 1.1;
+      letter-spacing: -.025em; margin-bottom: 36px;
+    }
+    .sub {
+      font-size: clamp(15px, 1.6vw, 20px);
+      font-weight: 300; line-height: 1.85;
+      color: var(--mid); margin-top: 24px;
+      max-width: 560px;
+    }
+    .body {
+      font-size: clamp(14px, 1.4vw, 17px);
+      font-weight: 300; line-height: 1.9;
+      color: var(--mid); max-width: 540px;
+    }
+
+    /* ── accent dash ── */
+    .dash { width: 36px; height: 2px; background: var(--gold); margin-bottom: 32px; }
+
+    /* ── big statement ── */
+    .statement {
+      font-size: clamp(20px, 2.8vw, 38px);
+      font-weight: 300; line-height: 1.55;
+      color: var(--ink); max-width: 720px;
+    }
+    .statement strong { font-weight: 700; }
+    .statement em { font-style: normal; color: var(--gold); }
+
+    /* ── formula block ── */
+    .formula {
+      display: flex; flex-wrap: wrap; align-items: center;
+      gap: 10px; margin: 32px 0;
+    }
+    .formula-chunk {
+      background: var(--ink); color: var(--bg);
+      padding: 10px 18px; font-size: clamp(12px, 1.2vw, 15px);
+      font-weight: 500; letter-spacing: .04em;
+    }
+    .formula-plus {
+      color: var(--faint); font-size: 18px; font-weight: 300;
+    }
+    .formula-note {
+      width: 100%; margin-top: 12px;
+      font-size: 13px; color: var(--faint);
+      font-weight: 300; letter-spacing: .04em;
+    }
+
+    /* ── two-col ── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; }
+
+    /* ── keyword table ── */
+    .kt { width: 100%; border-collapse: collapse; }
+    .kt tr { border-bottom: 1px solid rgba(0,0,0,.07); }
+    .kt tr:last-child { border-bottom: none; }
+    .kt td { padding: 13px 0; vertical-align: middle; }
+    .kt td.code {
+      font-family: 'Courier New', monospace;
+      font-size: 12px; font-weight: 600;
+      color: var(--ink); width: 210px;
+      padding-left: 20px; letter-spacing: .03em;
+      direction: ltr; text-align: left;
+    }
+    .kt td.desc { font-size: 14px; font-weight: 300; color: var(--mid); }
+
+    /* ── tags / pills ── */
+    .tags { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 10px; }
+    .tag {
+      background: var(--ink); color: var(--bg);
+      padding: 7px 16px; font-size: 11px;
+      font-family: 'Courier New', monospace;
+      font-weight: 600; letter-spacing: .06em;
+      direction: ltr;
+    }
+    .tag.light {
+      background: transparent; color: var(--mid);
+      border: 1px solid rgba(0,0,0,.15);
+    }
+
+    /* ── code block ── */
+    .code-block {
+      background: var(--dark); color: var(--code-fg);
+      padding: 30px 34px; font-family: 'Courier New', monospace;
+      font-size: 13px; line-height: 2.0;
+      direction: ltr; text-align: left;
+      position: relative;
+    }
+    .code-block::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--gold), transparent 60%);
+    }
+    .code-block .cm  { color: #888; }
+    .code-block .kw  { color: var(--gold); }
+
+    /* ── aspect blocks ── */
+    .aspect-row { display: flex; gap: 20px; align-items: flex-end; margin-top: 32px; }
+    .aspect-item { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .aspect-box {
+      background: var(--ink); display: flex;
+      align-items: center; justify-content: center;
+    }
+    .aspect-label {
+      font-family: 'Courier New', monospace;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: .08em; color: var(--mid);
+      direction: ltr;
+    }
+    .aspect-desc { font-size: 12px; color: var(--faint); font-weight: 300; }
+
+    /* ── exercise ── */
+    .ex-list { display: flex; flex-direction: column; gap: 22px; margin-top: 36px; }
+    .ex-item { display: flex; gap: 20px; align-items: flex-start; }
+    .ex-num {
+      font-size: 11px; font-weight: 700; letter-spacing: .15em;
+      color: var(--gold); padding-top: 4px; min-width: 22px;
+    }
+    .ex-text { font-size: clamp(15px, 1.6vw, 19px); font-weight: 400; line-height: 1.5; }
+
+    /* ── slide counter ── */
+    .counter {
+      position: absolute; bottom: 36px; left: 10vw;
+      font-size: 11px; letter-spacing: .15em;
+      color: var(--faint); font-weight: 300;
+    }
+
+    /* ── nav dots ── */
+    #dots {
+      position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 7px; z-index: 200;
+    }
+    .dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--faint); cursor: pointer;
+      transition: background .3s, transform .3s;
+    }
+    .dot.on { background: var(--ink); transform: scale(1.4); }
+
+    /* ── arrows ── */
+    .arrow {
+      position: fixed; top: 50%; transform: translateY(-50%);
+      font-size: 22px; color: var(--faint); cursor: pointer;
+      z-index: 200; padding: 16px;
+      transition: color .2s; user-select: none;
+    }
+    .arrow:hover { color: var(--ink); }
+    #prev { right: 20px; }
+    #next { left: 20px; }
+  @media (max-width: 768px) {
+    html, body { overflow: auto; }
+
+    #deck { height: auto; position: relative; }
+
+    .slide {
+      position: relative; inset: auto;
+      opacity: 1 !important; pointer-events: auto !important;
+      padding: 56px 6vw 72px;
+      flex-direction: column !important;
+      min-height: 100vh;
+      display: none;
+    }
+    .slide.active { display: flex; }
+
+    h1 { font-size: clamp(36px, 10vw, 60px); }
+    h2 { font-size: clamp(22px, 6vw, 36px); margin-bottom: 20px; }
+
+    .two-col { grid-template-columns: 1fr; gap: 28px; }
+
+    /* סליידים עם תמונה צד — עוברים לעמודות */
+    .slide[style*="flex-direction: row"],
+    .slide[style*="flex-direction:row"] {
+      flex-direction: column !important;
+    }
+
+    .slide[style*="flex-direction: row"] > div[style*="flex:1"],
+    .slide[style*="flex-direction:row"] > div[style*="flex:1"] {
+      width: 100%;
+      height: 50vw;
+      min-height: 220px;
+    }
+
+    .aspect-row { flex-wrap: wrap; gap: 16px; }
+    .formula { gap: 6px; }
+    .code-block { font-size: 11px; padding: 20px 16px 20px 56px; }
+    .copy-btn { top: 8px; left: 8px; }
+    .tool-cards { gap: 12px; }
+    .counter { bottom: 24px; left: 6vw; }
+    #dots { bottom: 20px; }
+    .arrow { display: none; }
+
+    /* section break */
+    .slide.section-break { min-height: 60vh; }
+  }
+  </style>
+</head>
+<body>
+
+<div class="bar top"></div>
+<div class="bar bottom"></div>
+
+<div id="deck">
+
+  <!-- ① TITLE SLIDE -->
+  <div class="slide active">
+    <div class="eyebrow">השבט — וידאו AI · <span>שיעור 02</span></div>
+    <h1>לבנות עולם,<br>לאלף רעיון.</h1>
+    <p class="sub">(כן, גם עכשיו. דווקא עכשיו. עם תה ביד ועין חצי פתוחה)</p>
+    <div class="counter">01 — 16</div>
+  </div>
+
+  <!-- ② MASHUP INTRO -->
+  <div class="slide">
+    <div class="eyebrow">לפני שמתחילים — <span>טריק קטן</span></div>
+    <h2>דרך פשוטה לפתח רעיון לטריילר</h2>
+    <p class="body" style="max-width:620px">
+      לפעמים במקום לשבת ולחכות להשראה —<br>
+      אפשר פשוט לתת לצ'אט <strong>משימה חכמה.</strong><br><br>
+      לחבר בין <em style="font-style:normal; color:var(--gold)">סגנון של במאי</em> לבין <em style="font-style:normal; color:var(--gold)">עולם מעניין</em><br>
+      ולבקש ממנו להציע כיוונים.
+    </p>
+    <div class="counter">02 — 16</div>
+  </div>
+
+  <!-- ② THE PROMPT -->
+  <div class="slide">
+    <div class="eyebrow">הפרומפט</div>
+    <div class="dash"></div>
+    <div class="code-block" style="max-width:680px; font-size:15px; line-height:2.2">
+      <span class="kw">What are some fun mashup ideas for a trailer</span><br>
+      that blends a cool director style<br>
+      with an interesting world?
+    </div>
+    <p class="body" style="margin-top:28px; max-width:560px">
+      זה פרומפט מעולה להתחלה —<br>
+      כי הוא לא מייצר ישר תוצאה סופית.<br>
+      הוא קודם כל <strong>פותח כיוונים.</strong>
+    </p>
+    <div class="counter">03 — 16</div>
+  </div>
+
+  <!-- ③ WHAT IT GIVES US -->
+  <div class="slide">
+    <div class="eyebrow">מה הוא נותן לנו בעצם?</div>
+    <h2>במקום דף ריק</h2>
+    <div class="ex-list" style="margin-top:8px">
+      <div class="ex-item">
+        <div class="ex-num">✦</div>
+        <div class="ex-text">שילובים מפתיעים</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-num">✦</div>
+        <div class="ex-text">כיוונים ויזואליים</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-num">✦</div>
+        <div class="ex-text">טון ואווירה</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-num">✦</div>
+        <div class="ex-text">השראה לעולמות</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-num">✦</div>
+        <div class="ex-text">התחלה של רעיון שאפשר לפתח הלאה</div>
+      </div>
+    </div>
+    <p class="body" style="margin-top:32px; color:var(--faint); font-style:italic">
+      לא טריילר עדיין — אלא גרעין טוב לטריילר.
+    </p>
+    <div class="counter">04 — 16</div>
+  </div>
+
+  <!-- ④ EXAMPLES -->
+  <div class="slide" style="padding: 0; flex-direction: row;">
+    <!-- image: left half -->
+    <div style="width:50%; height:100%; flex-shrink:0; overflow:hidden;">
+      <img src="images/שיעור-02/1.png" alt="Wes Anderson space station" style="width:100%; height:100%; object-fit:cover; display:block;">
+    </div>
+    <!-- text: right half -->
+    <div style="width:50%; padding: 64px 6vw; display:flex; flex-direction:column; justify-content:center;">
+      <div class="eyebrow">דוגמאות לתשובות שהוא יכול לתת</div>
+      <h2>במאי + עולם</h2>
+      <table class="kt" style="margin-top:8px;">
+        <tr><td class="code">Wes Anderson</td><td class="desc">+ תחנת חלל עתידנית</td></tr>
+        <tr><td class="code">Tim Burton</td><td class="desc">+ קניון אמריקאי משנות ה־90</td></tr>
+        <tr><td class="code">David Lynch</td><td class="desc">+ תחרות יופי</td></tr>
+        <tr><td class="code">Tarantino</td><td class="desc">+ קרקס נודד</td></tr>
+        <tr><td class="code">Sofia Coppola</td><td class="desc">+ ארמון של נסיכות דיגיטליות</td></tr>
+      </table>
+      <p class="body" style="margin-top:28px">
+        מכאן בוחרים רעיון אחד<br>
+        וממשיכים לפתח — שוטים, דמויות, שפה.
+      </p>
+      <div class="counter">05 — 16</div>
+    </div>
+  </div>
+
+  <!-- ⑤ EXERCISE -->
+  <div class="slide">
+    <div class="eyebrow">תרגיל — 10 דקות</div>
+    <h2>עכשיו אתם</h2>
+    <p class="body" style="margin-bottom:28px">
+      פשוט תכניסו את הפרומפט הזה לצ'אט.<br>
+      אפשר לשלב בפנים את הרעיון שלכם.
+    </p>
+    <div class="code-block" style="max-width:600px; font-size:15px; line-height:2.2">
+      <span class="kw">What are some fun mashup ideas for a trailer</span><br>
+      that blends a cool director style<br>
+      with an interesting world?
+    </div>
+    <p class="body" style="margin-top:28px; color:var(--faint); font-style:italic">
+      אין תשובה לא נכונה. יש רק רעיון שעוד לא קיים.
+    </p>
+    <div class="counter">06 — 16</div>
+  </div>
+
+  <!-- ⑥ TITLE (was ①) -->
+  <div class="slide">
+    <div class="eyebrow">השבט — וידאו AI · <span>שיעור 02</span></div>
+    <h1>תמונה יפה<br>זה לא מספיק.</h1>
+    <p class="sub">
+      יש תמונות שנראות טוב.<br>
+      ויש תמונות שאי אפשר להפסיק להסתכל עליהן.<br>
+      ההבדל לא נמצא בכלי. הוא נמצא בשפה.
+    </p>
+    <div class="counter">07 — 16</div>
+  </div>
+
+  <!-- ② PLASTIC PROBLEM -->
+  <div class="slide" style="flex-direction:row; padding:0;">
+    <!-- text: right side -->
+    <div style="width:42%; padding:64px 5vw; display:flex; flex-direction:column; justify-content:center; flex-shrink:0;">
+      <div class="eyebrow">הבעיה</div>
+      <p class="statement" style="margin-bottom:24px;">
+        AI היום יכול ליצור תמונות <strong>מושלמות מדי.</strong><br>
+        עור חלק מדי. שיער מסורק מדי. אור אחיד מדי.<br>
+        ולכן זה נראה <em>מזויף.</em>
+      </p>
+      <p class="sub">
+        הפלסטיק מגיע מדיוק יתר.<br>
+        מחוסר פגמים.<br>
+        ואת הפגמים — צריך לבקש בעצמכם.
+      </p>
+      <div class="counter">08 — 16</div>
+    </div>
+    <!-- images: left side side-by-side -->
+    <div style="width:58%; height:100%; display:flex; flex-direction:row; align-items:center; gap:12px; padding:40px 40px 40px 0; flex-shrink:0;">
+      <div style="position:relative; border-radius:4px; overflow:hidden; flex:1;">
+        <img src="images/שיעור-02/icecream 1.png" alt="plastic AI image" style="width:100%; display:block;">
+        <div style="position:absolute; bottom:10px; right:12px; background:rgba(25,25,23,0.75); color:#F4F2ED; font-size:11px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; padding:5px 10px;">מושלם מדי</div>
+      </div>
+      <div style="position:relative; border-radius:4px; overflow:hidden; flex:1;">
+        <img src="images/שיעור-02/icecream2.png" alt="cinematic image" style="width:100%; display:block;">
+        <div style="position:absolute; bottom:10px; right:12px; background:rgba(196,150,90,0.9); color:#F4F2ED; font-size:11px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; padding:5px 10px;">קולנועי</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ③ FORMULA -->
+  <div class="slide" style="flex-direction:row; padding:0;">
+    <!-- content: right side -->
+    <div style="width:55%; padding:52px 5vw; display:flex; flex-direction:column; justify-content:center; flex-shrink:0; overflow:hidden;">
+      <div class="eyebrow">הנוסחה</div>
+      <h2 style="margin-bottom:16px;">ככה בונים פרומפט קולנועי</h2>
+      <div class="formula" style="margin-top:0; flex-wrap:wrap; gap:6px;">
+        <div class="formula-chunk" style="font-size:12px; padding:6px 10px;">מדיום</div>
+        <div class="formula-plus">+</div>
+        <div class="formula-chunk" style="font-size:12px; padding:6px 10px;">נושא</div>
+        <div class="formula-plus">+</div>
+        <div class="formula-chunk" style="font-size:12px; padding:6px 10px;">פעולה</div>
+        <div class="formula-plus">+</div>
+        <div class="formula-chunk" style="font-size:12px; padding:6px 10px;">סביבה</div>
+        <div class="formula-plus">+</div>
+        <div class="formula-chunk" style="font-size:12px; padding:6px 10px;">תאורה</div>
+        <div class="formula-plus">+</div>
+        <div class="formula-chunk" style="font-size:12px; padding:6px 10px;">רגש</div>
+        <div class="formula-plus">+</div>
+        <div class="formula-chunk" style="font-size:12px; padding:6px 10px;">סגנון</div>
+      </div>
+      <!-- legend -->
+      <div style="display:flex; flex-wrap:wrap; gap:8px 16px; margin-top:18px; margin-bottom:10px; font-size:10px; font-weight:500; letter-spacing:.08em; text-transform:uppercase; font-family:'Heebo',sans-serif;">
+        <span style="color:#C4965A;">■ מדיום</span>
+        <span style="color:#E08B6A;">■ נושא</span>
+        <span style="color:#7DB87D;">■ פעולה</span>
+        <span style="color:#6AAED4;">■ סביבה</span>
+        <span style="color:#D4C56A;">■ תאורה</span>
+        <span style="color:#B07AB8;">■ רגש — אנרגיה, מצב רגשי</span>
+        <span style="color:#6ABDB5;">■ סגנון — מצלמה, עדשה, grain, גריידינג</span>
+      </div>
+      <!-- prompt -->
+      <div class="code-block" style="font-size:12px; line-height:2;">
+        still from a movie,
+        <span style="color:#C4965A;">medium shot</span>,
+        <span style="color:#E08B6A;">a young woman</span>
+        <span style="color:#7DB87D;">eating ice cream</span>,
+        <span style="color:#6AAED4;">American diner, red vinyl booths, rain on the window</span>,
+        <span style="color:#D4C56A;">warm neon light, practical lighting</span>,
+        <span style="color:#B07AB8;">pensive expression</span>,
+        <span style="color:#6ABDB5;">shot on ARRI Alexa, 35mm lens, film grain, muted warm color grade</span>
+      </div>
+      <div class="counter">09 — 16</div>
+    </div>
+    <!-- image: left side -->
+    <div style="width:45%; height:100%; flex-shrink:0; overflow:hidden;">
+      <img src="images/שיעור-02/still_from_a.png" alt="still from a movie" style="width:100%; height:100%; object-fit:cover; display:block;">
+    </div>
+  </div>
+
+  <!-- ④ DIRECTORS GRID -->
+  <div class="slide" style="padding: 48px 6vw 48px;">
+    <div class="eyebrow">דוגמאות — <span>במאי × עולם</span></div>
+    <h2 style="margin-bottom:20px;">איך זה נראה בפועל</h2>
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); grid-template-rows:repeat(2,1fr); gap:10px; flex:1; height:calc(100vh - 220px);">
+      <div style="position:relative; overflow:hidden; border-radius:4px;">
+        <img src="images/שיעור-02/במאים/Wes Anderson.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:20px 12px 10px;color:#F4F2ED;font-size:13px;font-weight:700;letter-spacing:.04em;">Wes Anderson</div>
+      </div>
+      <div style="position:relative; overflow:hidden; border-radius:4px;">
+        <img src="images/שיעור-02/במאים/Tim Burton.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:20px 12px 10px;color:#F4F2ED;font-size:13px;font-weight:700;letter-spacing:.04em;">Tim Burton</div>
+      </div>
+      <div style="position:relative; overflow:hidden; border-radius:4px;">
+        <img src="images/שיעור-02/במאים/David Fincher.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:20px 12px 10px;color:#F4F2ED;font-size:13px;font-weight:700;letter-spacing:.04em;">David Fincher</div>
+      </div>
+      <div style="position:relative; overflow:hidden; border-radius:4px;">
+        <img src="images/שיעור-02/במאים/Sofia Coppola.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:20px 12px 10px;color:#F4F2ED;font-size:13px;font-weight:700;letter-spacing:.04em;">Sofia Coppola</div>
+      </div>
+      <div style="position:relative; overflow:hidden; border-radius:4px;">
+        <img src="images/שיעור-02/במאים/Quentin Tarantino.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:20px 12px 10px;color:#F4F2ED;font-size:13px;font-weight:700;letter-spacing:.04em;">Quentin Tarantino</div>
+      </div>
+      <div style="position:relative; overflow:hidden; border-radius:4px;">
+        <img src="images/שיעור-02/במאים/Wong Kar-wai.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:20px 12px 10px;color:#F4F2ED;font-size:13px;font-weight:700;letter-spacing:.04em;">Wong Kar-wai</div>
+      </div>
+      <div style="position:relative; overflow:hidden; border-radius:4px;">
+        <img src="images/שיעור-02/במאים/Pedro Almodóvar.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:20px 12px 10px;color:#F4F2ED;font-size:13px;font-weight:700;letter-spacing:.04em;">Pedro Almodóvar</div>
+      </div>
+      <div style="position:relative; overflow:hidden; border-radius:4px;">
+        <img src="images/שיעור-02/במאים/Gaspar Noé.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:20px 12px 10px;color:#F4F2ED;font-size:13px;font-weight:700;letter-spacing:.04em;">Gaspar Noé</div>
+      </div>
+    </div>
+    <div class="counter">10 — 16</div>
+  </div>
+
+  <!-- ⑤ CAMERA & LENS -->
+  <div class="slide" style="padding: 0; flex-direction: column; justify-content: flex-start;">
+    <!-- image strip -->
+    <div style="display:flex; width:100%; height:40vh; flex-shrink:0;">
+      <div style="flex:1; position:relative; overflow:hidden;">
+        <img src="images/שיעור-03/מצלמות/ARRI Alexa.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:14px 12px 8px;">
+          <div style="color:#C4965A;font-family:'Courier New',monospace;font-size:11px;font-weight:700;letter-spacing:.06em;direction:ltr;">ARRI Alexa</div>
+          <div style="color:rgba(244,242,237,0.65);font-size:11px;font-weight:300;">הוליווד — כמעט כל סרט</div>
+        </div>
+      </div>
+      <div style="flex:1; position:relative; overflow:hidden;">
+        <img src="images/שיעור-03/מצלמות/mm 24.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:14px 12px 8px;">
+          <div style="color:#C4965A;font-family:'Courier New',monospace;font-size:11px;font-weight:700;letter-spacing:.06em;direction:ltr;">24mm</div>
+          <div style="color:rgba(244,242,237,0.65);font-size:11px;font-weight:300;">מרחב, נוף — כמו שאתן שם</div>
+        </div>
+      </div>
+      <div style="flex:1; position:relative; overflow:hidden;">
+        <img src="images/שיעור-03/מצלמות/35 mm.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:14px 12px 8px;">
+          <div style="color:#C4965A;font-family:'Courier New',monospace;font-size:11px;font-weight:700;letter-spacing:.06em;direction:ltr;">35mm</div>
+          <div style="color:rgba(244,242,237,0.65);font-size:11px;font-weight:300;">טבעי, אינטימי — כמו העין</div>
+        </div>
+      </div>
+      <div style="flex:1; position:relative; overflow:hidden;">
+        <img src="images/שיעור-03/מצלמות/50 mm.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:14px 12px 8px;">
+          <div style="color:#C4965A;font-family:'Courier New',monospace;font-size:11px;font-weight:700;letter-spacing:.06em;direction:ltr;">50mm</div>
+          <div style="color:rgba(244,242,237,0.65);font-size:11px;font-weight:300;">נייטרלי — בלי דרמה</div>
+        </div>
+      </div>
+      <div style="flex:1; position:relative; overflow:hidden;">
+        <img src="images/שיעור-03/מצלמות/85 mm.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:14px 12px 8px;">
+          <div style="color:#C4965A;font-family:'Courier New',monospace;font-size:11px;font-weight:700;letter-spacing:.06em;direction:ltr;">85mm</div>
+          <div style="color:rgba(244,242,237,0.65);font-size:11px;font-weight:300;">פורטרט — הדמות היא הכל</div>
+        </div>
+      </div>
+      <div style="flex:1; position:relative; overflow:hidden;">
+        <img src="images/שיעור-03/מצלמות/anamorphic.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:14px 12px 8px;">
+          <div style="color:#C4965A;font-family:'Courier New',monospace;font-size:11px;font-weight:700;letter-spacing:.06em;direction:ltr;">anamorphic</div>
+          <div style="color:rgba(244,242,237,0.65);font-size:11px;font-weight:300;">קולנוע קלאסי + lens flares</div>
+        </div>
+      </div>
+    </div>
+    <!-- content below -->
+    <div style="padding: 24px 10vw; display:flex; gap:60px; align-items:flex-start; flex:1;">
+      <div style="flex:1;">
+        <div class="eyebrow">מצלמה ועדשה</div>
+        <p class="body" style="margin-top:8px;">
+          כשאתן כותבות <code style="font-family:monospace; color:var(--ink); font-size:13px;">shot on ARRI Alexa</code> —<br>
+          המודל לא רק משנה טקסטורה.<br>
+          הוא עובר לאוסף ההפניות שלו מסרטים.<br><br>
+          הוא ראה 10,000 שעות ממנה.<br>
+          הוא יודע מה היא <strong>מרגישה.</strong>
+        </p>
+        <div class="tags" style="margin-top:20px">
+          <div class="tag">shot on ARRI Alexa</div>
+          <div class="tag">shot on Canon 5D</div>
+          <div class="tag">shot on iPhone</div>
+          <div class="tag">super 8mm film</div>
+        </div>
+      </div>
+      <div style="flex:1;">
+        <table class="kt">
+          <tr>
+            <td class="code">24mm lens</td>
+            <td class="desc">מרחב, נוף, גדולה<br><span style="font-size:12px; color:var(--faint);">לנופים וקבוצות — כמו שאתן ממש שם.</span></td>
+          </tr>
+          <tr>
+            <td class="code">35mm lens</td>
+            <td class="desc">טבעי, אינטימי<br><span style="font-size:12px; color:var(--faint);">הכי קרוב לעין. לסצנות יומיומיות.</span></td>
+          </tr>
+          <tr>
+            <td class="code">50mm lens</td>
+            <td class="desc">נייטרלי, נקי<br><span style="font-size:12px; color:var(--faint);">הדמות כמו שהיא — בלי דרמה.</span></td>
+          </tr>
+          <tr>
+            <td class="code">85mm lens</td>
+            <td class="desc">פורטרט, רקע מטושטש<br><span style="font-size:12px; color:var(--faint);">מבודד פנים, מטשטש הכל מאחור.</span></td>
+          </tr>
+          <tr>
+            <td class="code">anamorphic</td>
+            <td class="desc">קולנוע קלאסי + lens flares<br><span style="font-size:12px; color:var(--faint);">לוק הוליווד — הגוף מכיר מהקולנוע.</span></td>
+          </tr>
+          <tr>
+            <td class="code">f/1.8 · f/2.8</td>
+            <td class="desc">bokeh עמוק<br><span style="font-size:12px; color:var(--faint);">רקע נמחק לגמרי, דמות בולטת.</span></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div class="counter">11 — 16</div>
+  </div>
+
+  <!-- ⑤ LIGHTING -->
+  <div class="slide" style="padding: 0; flex-direction: column; justify-content: flex-start;">
+    <!-- image strip -->
+    <div style="display:flex; width:100%; height:40vh; flex-shrink:0;">
+      <div style="flex:1; position:relative; overflow:hidden;">
+        <img src="images/שיעור-03/תאורה/golden hour.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:14px 12px 8px;">
+          <div style="color:#C4965A;font-family:'Courier New',monospace;font-size:11px;font-weight:700;letter-spacing:.06em;direction:ltr;">golden hour</div>
+          <div style="color:rgba(244,242,237,0.65);font-size:11px;font-weight:300;">ערב שעומד להיגמר</div>
+        </div>
+      </div>
+      <div style="flex:1; position:relative; overflow:hidden;">
+        <img src="images/שיעור-03/תאורה/volumetric light.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:14px 12px 8px;">
+          <div style="color:#C4965A;font-family:'Courier New',monospace;font-size:11px;font-weight:700;letter-spacing:.06em;direction:ltr;">volumetric light</div>
+          <div style="color:rgba(244,242,237,0.65);font-size:11px;font-weight:300;">עשן, עומק, מסתורי</div>
+        </div>
+      </div>
+      <div style="flex:1; position:relative; overflow:hidden;">
+        <img src="images/שיעור-03/תאורה/rim lighting.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:14px 12px 8px;">
+          <div style="color:#C4965A;font-family:'Courier New',monospace;font-size:11px;font-weight:700;letter-spacing:.06em;direction:ltr;">rim lighting</div>
+          <div style="color:rgba(244,242,237,0.65);font-size:11px;font-weight:300;">קשה, דרמטי, גיבורה</div>
+        </div>
+      </div>
+      <div style="flex:1; position:relative; overflow:hidden;">
+        <img src="images/שיעור-03/תאורה/soft diffused light.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:14px 12px 8px;">
+          <div style="color:#C4965A;font-family:'Courier New',monospace;font-size:11px;font-weight:700;letter-spacing:.06em;direction:ltr;">soft diffused light</div>
+          <div style="color:rgba(244,242,237,0.65);font-size:11px;font-weight:300;">עדין, חלומי, רך</div>
+        </div>
+      </div>
+      <div style="flex:1; position:relative; overflow:hidden;">
+        <img src="images/שיעור-03/תאורה/practical lighting.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:14px 12px 8px;">
+          <div style="color:#C4965A;font-family:'Courier New',monospace;font-size:11px;font-weight:700;letter-spacing:.06em;direction:ltr;">practical lighting</div>
+          <div style="color:rgba(244,242,237,0.65);font-size:11px;font-weight:300;">ריאלי, מהחדר עצמו</div>
+        </div>
+      </div>
+    </div>
+    <!-- content below -->
+    <div style="padding: 24px 10vw; display:flex; gap:60px; align-items:flex-start; flex:1;">
+      <div style="flex:1;">
+        <div class="eyebrow">תאורה</div>
+        <h2 style="font-size:clamp(17px,2.2vw,30px); margin-bottom:12px; line-height:1.2;">אור —<br>מה שהצופה מרגיש<br>בלי לדעת למה.</h2>
+        <p class="body" style="max-width:420px;">
+          <code style="font-family:monospace; color:var(--ink); font-size:13px;">golden hour</code> לא אומרת "שמש יפה."<br>
+          היא אומרת: <em style="color:var(--gold); font-style:normal;">עוד רגע זה יגמר.</em><br><br>
+          <code style="font-family:monospace; color:var(--ink); font-size:13px;">harsh overhead light</code> אומרת:<br>
+          <em style="color:var(--gold); font-style:normal;">אין איפה להתחבא.</em><br><br>
+          <code style="font-family:monospace; color:var(--ink); font-size:13px;">candlelight</code> אומרת:<br>
+          <em style="color:var(--gold); font-style:normal;">מישהו החליט שהלילה הזה חשוב.</em>
+        </p>
+        <div class="ex-box" style="margin-top:20px;">
+          <div class="ex-label">תרגיל — 5 דקות</div>
+          <div class="ex-text">אותו פרומפט שלוש פעמים.<br>שנו רק את התאורה.<br>בחרו מה הרגשתן הכי.</div>
+        </div>
+      </div>
+      <div style="flex:1;">
+        <table class="kt">
+          <tr><td class="code">golden hour</td><td class="desc">חמים, נוסטלגי, סוף יום</td></tr>
+          <tr><td class="code">volumetric light</td><td class="desc">עשן, מסתורי, עומק</td></tr>
+          <tr><td class="code">rim lighting</td><td class="desc">קשה, דרמטי, גיבור</td></tr>
+          <tr><td class="code">soft diffused light</td><td class="desc">עדין, חלומי, רך</td></tr>
+          <tr><td class="code">chiaroscuro</td><td class="desc">אפלה ואור, קלאסי</td></tr>
+          <tr><td class="code">practical lighting</td><td class="desc">ריאלי, מהחדר עצמו</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="counter">12 — 16</div>
+  </div>
+
+  <!-- ⑥ REALISM / GRAIN -->
+  <div class="slide" style="padding: 0; flex-direction: column; justify-content: flex-start;">
+    <!-- image strip -->
+    <div style="display:flex; width:100%; height:40vh; flex-shrink:0;">
+      <div style="flex:1; position:relative; overflow:hidden;">
+        <img src="images/שיעור-03/פגמים/film grain.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:14px 12px 8px;">
+          <div style="color:#C4965A;font-family:'Courier New',monospace;font-size:10px;font-weight:700;letter-spacing:.06em;direction:ltr;">film grain</div>
+        </div>
+      </div>
+      <div style="flex:1; position:relative; overflow:hidden;">
+        <img src="images/שיעור-03/פגמים/slight chromatic.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:14px 12px 8px;">
+          <div style="color:#C4965A;font-family:'Courier New',monospace;font-size:10px;font-weight:700;letter-spacing:.06em;direction:ltr;">chromatic aberration</div>
+        </div>
+      </div>
+      <div style="flex:1; position:relative; overflow:hidden;">
+        <img src="images/שיעור-03/פגמים/natural skin texture.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:14px 12px 8px;">
+          <div style="color:#C4965A;font-family:'Courier New',monospace;font-size:10px;font-weight:700;letter-spacing:.06em;direction:ltr;">natural skin texture</div>
+        </div>
+      </div>
+      <div style="flex:1; position:relative; overflow:hidden;">
+        <img src="images/שיעור-03/פגמים/Kodak Gold 200.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:14px 12px 8px;">
+          <div style="color:#C4965A;font-family:'Courier New',monospace;font-size:10px;font-weight:700;letter-spacing:.06em;direction:ltr;">Kodak Gold 200</div>
+        </div>
+      </div>
+      <div style="flex:1; position:relative; overflow:hidden;">
+        <img src="images/שיעור-03/פגמים/Fujifilm 400H.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:14px 12px 8px;">
+          <div style="color:#C4965A;font-family:'Courier New',monospace;font-size:10px;font-weight:700;letter-spacing:.06em;direction:ltr;">Fujifilm 400H</div>
+        </div>
+      </div>
+    </div>
+    <!-- content below -->
+    <div style="padding: 28px 10vw; display:flex; gap:60px; align-items:center; flex:1;">
+      <div style="flex:1;">
+        <div class="eyebrow">ריאליזם</div>
+        <h2 style="font-size:clamp(24px,3.5vw,48px); margin-bottom:16px;">לבקש את הפגמים</h2>
+        <p class="body">
+          הפגמים הם מה שגורם לזה להרגיש אמיתי.<br>
+          תוסיפו אותם במפורש — המודל לא יוסיף אותם לבד.
+        </p>
+      </div>
+      <div style="flex:1;">
+        <table class="kt">
+          <tr><td class="code">film grain</td><td class="desc">חספוס קולנועי, טקסטורה אנלוגית, דימוי עם תחושת חיים</td></tr>
+          <tr><td class="code">chromatic aberration</td><td class="desc">פגם עדין של עדשה, הפרדת צבע בקצוות, חלומיות לא נינוחה</td></tr>
+          <tr><td class="code">natural skin texture</td><td class="desc">ריאליזם אמין בקלוז-אפ, נוכחות אנושית, לא מלוטש</td></tr>
+          <tr><td class="code">subtle pores</td><td class="desc">קרבה אינטימית של העדשה, אמינות קולנועית גבוהה</td></tr>
+          <tr><td class="code">slight asymmetry</td><td class="desc">יופי אמין, אי-סימטריה אנושית, פחות שלמות סינתטית</td></tr>
+          <tr><td class="code">soft specular highlights</td><td class="desc">ברק עדין של אור מהעור, זוהר קולנועי מלוטש</td></tr>
+          <tr><td class="code">Kodak Gold 200</td><td class="desc">צהובים שטופי שמש, ריאליזם וינטג'י, תחושת זיכרון</td></tr>
+          <tr><td class="code">Fujifilm 400H</td><td class="desc">גווני פסטל אווריריים, אלגנטיות רומנטית, ריאליזם אופנתי</td></tr>
+        </table>
+        <p class="body" style="font-style:italic; color:var(--faint); margin-top:16px;">
+          ובמידג'רני: <span style="font-family:monospace; font-style:normal; color:var(--mid);">--style raw</span> לכל פרומפט קולנועי.
+        </p>
+      </div>
+    </div>
+    <div class="counter">13 — 16</div>
+  </div>
+
+  <!-- ⑦ ASPECT RATIO -->
+  <div class="slide">
+    <div class="eyebrow">יחס גובה-רוחב</div>
+    <h2>הפריים הוא בחירה</h2>
+    <p class="body">
+      2.39:1 הוא מה שרואים בקולנוע בקולנוע — הגוף שלכן מזהה אותו כ"סרט רציני".<br>
+      9:16 הוא אינטימי, ישיר, כאילו מישהו מסתכל עליכן.
+    </p>
+    <div class="aspect-row">
+      <div class="aspect-item">
+        <div class="aspect-box" style="width:120px; height:50px"></div>
+        <div class="aspect-label">--ar 2.39:1</div>
+        <div class="aspect-desc">קולנוע אנמורפי</div>
+      </div>
+      <div class="aspect-item">
+        <div class="aspect-box" style="width:100px; height:56px"></div>
+        <div class="aspect-label">--ar 16:9</div>
+        <div class="aspect-desc">טלוויזיה / יוטיוב</div>
+      </div>
+      <div class="aspect-item">
+        <div class="aspect-box" style="width:56px; height:100px"></div>
+        <div class="aspect-label">--ar 9:16</div>
+        <div class="aspect-desc">ריל / טיקטוק</div>
+      </div>
+      <div class="aspect-item">
+        <div class="aspect-box" style="width:80px; height:80px"></div>
+        <div class="aspect-label">--ar 1:1</div>
+        <div class="aspect-desc">סושיאל קלאסי</div>
+      </div>
+    </div>
+    <div class="counter">14 — 16</div>
+  </div>
+
+  <!-- ⑧ COLOR GRADING -->
+  <div class="slide" style="padding: 0; flex-direction: column; justify-content: flex-start;">
+    <!-- image strip -->
+    <div style="display:flex; width:100%; height:40vh; flex-shrink:0;">
+      <div style="flex:1; position:relative; overflow:hidden;">
+        <img src="images/שיעור-03/צבעים/muted tones.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:14px 12px 8px;">
+          <div style="color:#C4965A;font-family:'Courier New',monospace;font-size:10px;font-weight:700;letter-spacing:.06em;direction:ltr;">muted tones</div>
+          <div style="color:rgba(244,242,237,0.65);font-size:11px;font-weight:300;">עדין, אינדי, מחשבתי</div>
+        </div>
+      </div>
+      <div style="flex:1; position:relative; overflow:hidden;">
+        <img src="images/שיעור-03/צבעים/teal and orange.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:14px 12px 8px;">
+          <div style="color:#C4965A;font-family:'Courier New',monospace;font-size:10px;font-weight:700;letter-spacing:.06em;direction:ltr;">teal and orange</div>
+          <div style="color:rgba(244,242,237,0.65);font-size:11px;font-weight:300;">הוליווד, אקשן, דרמטי</div>
+        </div>
+      </div>
+      <div style="flex:1; position:relative; overflow:hidden;">
+        <img src="images/שיעור-03/צבעים/warm color palette.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:14px 12px 8px;">
+          <div style="color:#C4965A;font-family:'Courier New',monospace;font-size:10px;font-weight:700;letter-spacing:.06em;direction:ltr;">warm color palette</div>
+          <div style="color:rgba(244,242,237,0.65);font-size:11px;font-weight:300;">נוסטלגיה, חמימות, בית</div>
+        </div>
+      </div>
+      <div style="flex:1; position:relative; overflow:hidden;">
+        <img src="images/שיעור-03/צבעים/duotone.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:14px 12px 8px;">
+          <div style="color:#C4965A;font-family:'Courier New',monospace;font-size:10px;font-weight:700;letter-spacing:.06em;direction:ltr;">duotone</div>
+          <div style="color:rgba(244,242,237,0.65);font-size:11px;font-weight:300;">אמנותי, ייחודי</div>
+        </div>
+      </div>
+      <div style="flex:1; position:relative; overflow:hidden;">
+        <img src="images/שיעור-03/צבעים/desaturated.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:14px 12px 8px;">
+          <div style="color:#C4965A;font-family:'Courier New',monospace;font-size:10px;font-weight:700;letter-spacing:.06em;direction:ltr;">desaturated</div>
+          <div style="color:rgba(244,242,237,0.65);font-size:11px;font-weight:300;">קר, לינארי, עתידני</div>
+        </div>
+      </div>
+      <div style="flex:1; position:relative; overflow:hidden;">
+        <img src="images/שיעור-03/צבעים/cinematic color grade.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:14px 12px 8px;">
+          <div style="color:#C4965A;font-family:'Courier New',monospace;font-size:10px;font-weight:700;letter-spacing:.06em;direction:ltr;">cinematic color grade</div>
+          <div style="color:rgba(244,242,237,0.65);font-size:11px;font-weight:300;">כללי — עובד תמיד</div>
+        </div>
+      </div>
+    </div>
+    <!-- content below -->
+    <div style="padding: 28px 10vw; display:flex; gap:60px; align-items:center; flex:1;">
+      <div style="flex:1;">
+        <div class="eyebrow">Color Grading</div>
+        <h2 style="font-size:clamp(22px,3vw,42px); margin-bottom:16px;">הצבע הוא לא עיצוב.<br>הוא ההחלטה הרגשית<br>הכי גדולה.</h2>
+        <p class="body">
+          <code style="font-family:monospace; color:var(--ink); font-size:13px;">teal and orange</code> — 90% מסרטי האקשן של הוליווד.<br>
+          הגוף שלכן מזהה אותו מבלי שאתן יודעות.<br><br>
+          כשאתן כותבות אותו בפרומפט —<br>
+          המוח של הצופה כבר מרגיש "סרט רציני".
+        </p>
+      </div>
+      <div style="flex:1;">
+        <table class="kt">
+          <tr><td class="code">muted tones</td><td class="desc">עדין, אינדי, מחשבתי</td></tr>
+          <tr><td class="code">teal and orange</td><td class="desc">הוליווד, אקשן, דרמטי</td></tr>
+          <tr><td class="code">warm color palette</td><td class="desc">נוסטלגיה, חמימות, בית</td></tr>
+          <tr><td class="code">duotone</td><td class="desc">אמנותי, ייחודי</td></tr>
+          <tr><td class="code">desaturated</td><td class="desc">קר, לינארי, עתידני</td></tr>
+          <tr><td class="code">cinematic color grade</td><td class="desc">כללי — עובד תמיד</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="counter">15 — 16</div>
+  </div>
+
+  <!-- MEDIUM -->
+  <div class="slide" style="padding: 0; flex-direction: column; justify-content: flex-start;">
+    <div style="display:flex; width:100%; height:40vh; flex-shrink:0;">
+      <div style="flex:1; position:relative; overflow:hidden;">
+        <img src="images/שיעור-03/מדיום/still from a film.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:14px 12px 8px;">
+          <div style="color:#C4965A;font-family:'Courier New',monospace;font-size:10px;font-weight:700;letter-spacing:.06em;direction:ltr;">still from a film</div>
+          <div style="color:rgba(244,242,237,0.65);font-size:11px;font-weight:300;">יש במאי, יש כוונה, יש סיפור</div>
+        </div>
+      </div>
+      <div style="flex:1; position:relative; overflow:hidden;">
+        <img src="images/שיעור-03/מדיום/documentary photo.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:14px 12px 8px;">
+          <div style="color:#C4965A;font-family:'Courier New',monospace;font-size:10px;font-weight:700;letter-spacing:.06em;direction:ltr;">documentary photo</div>
+          <div style="color:rgba(244,242,237,0.65);font-size:11px;font-weight:300;">אמיתי, לא מסודר, קיים</div>
+        </div>
+      </div>
+      <div style="flex:1; position:relative; overflow:hidden;">
+        <img src="images/שיעור-03/מדיום/polaroid.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:14px 12px 8px;">
+          <div style="color:#C4965A;font-family:'Courier New',monospace;font-size:10px;font-weight:700;letter-spacing:.06em;direction:ltr;">polaroid</div>
+          <div style="color:rgba(244,242,237,0.65);font-size:11px;font-weight:300;">נוסטלגיה, זמנית, אישית</div>
+        </div>
+      </div>
+      <div style="flex:1; position:relative; overflow:hidden;">
+        <img src="images/שיעור-03/מדיום/oil painting.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:14px 12px 8px;">
+          <div style="color:#C4965A;font-family:'Courier New',monospace;font-size:10px;font-weight:700;letter-spacing:.06em;direction:ltr;">oil painting</div>
+          <div style="color:rgba(244,242,237,0.65);font-size:11px;font-weight:300;">כבד, רציני, שנים</div>
+        </div>
+      </div>
+      <div style="flex:1; position:relative; overflow:hidden;">
+        <img src="images/שיעור-03/מדיום/analog photograph.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+        <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(20,20,18,0.85));padding:14px 12px 8px;">
+          <div style="color:#C4965A;font-family:'Courier New',monospace;font-size:10px;font-weight:700;letter-spacing:.06em;direction:ltr;">analog photograph</div>
+          <div style="color:rgba(244,242,237,0.65);font-size:11px;font-weight:300;">גרגרי, חם, לא מושלם</div>
+        </div>
+      </div>
+    </div>
+    <div style="padding: 24px 10vw; display:flex; gap:60px; align-items:flex-start; flex:1;">
+      <div style="flex:1;">
+        <div class="eyebrow">מדיום</div>
+        <h2 style="font-size:clamp(22px,3vw,40px); margin-bottom:16px;">"What" vs.<br>"How it was made"</h2>
+        <p class="body">
+          המדיום הוא לא רקע — הוא כבר חצי ההחלטה.<br><br>
+          כשאתן כותבות <code style="font-family:monospace; color:var(--ink); font-size:13px;">still from a film</code> —<br>
+          אתן לא מבקשות תמונה.<br>
+          אתן מבקשות <strong>עולם.</strong>
+        </p>
+      </div>
+      <div style="flex:1;">
+        <table class="kt">
+          <tr><td class="code">still from a film</td><td class="desc">יש במאי, יש כוונה, יש סיפור</td></tr>
+          <tr><td class="code">editorial photography</td><td class="desc">קר, גבוה, אסתטי</td></tr>
+          <tr><td class="code">documentary photo</td><td class="desc">אמיתי, לא מסודר, קיים</td></tr>
+          <tr><td class="code">polaroid</td><td class="desc">נוסטלגיה, זמנית, אישית</td></tr>
+          <tr><td class="code">oil painting</td><td class="desc">כבד, רציני, שנים</td></tr>
+          <tr><td class="code">analog photograph</td><td class="desc">גרגרי, חם, לא מושלם</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="counter">16 — 17</div>
+  </div>
+
+  <!-- ⑩ EXERCISE -->
+  <div class="slide">
+    <div class="eyebrow">תרגיל — 10 דקות</div>
+    <h2 style="margin-bottom:28px;">כתבו פרומפט<br>לדמות שלכם</h2>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px 40px; max-width:720px;">
+      <div style="display:flex; gap:12px; align-items:baseline;">
+        <span style="color:#C4965A; font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; flex-shrink:0;">מדיום</span>
+        <span class="body" style="color:var(--mid);">medium shot / close-up / wide shot</span>
+      </div>
+      <div style="display:flex; gap:12px; align-items:baseline;">
+        <span style="color:#E08B6A; font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; flex-shrink:0;">נושא</span>
+        <span class="body" style="color:var(--mid);">מי היא? איך היא נראית?</span>
+      </div>
+      <div style="display:flex; gap:12px; align-items:baseline;">
+        <span style="color:#7DB87D; font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; flex-shrink:0;">פעולה</span>
+        <span class="body" style="color:var(--mid);">מה היא עושה ברגע הזה?</span>
+      </div>
+      <div style="display:flex; gap:12px; align-items:baseline;">
+        <span style="color:#6AAED4; font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; flex-shrink:0;">סביבה</span>
+        <span class="body" style="color:var(--mid);">איפה? מה יש סביבה?</span>
+      </div>
+      <div style="display:flex; gap:12px; align-items:baseline;">
+        <span style="color:#D4C56A; font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; flex-shrink:0;">תאורה</span>
+        <span class="body" style="color:var(--mid);">איזה אור מתאים לה?</span>
+      </div>
+      <div style="display:flex; gap:12px; align-items:baseline;">
+        <span style="color:#B07AB8; font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; flex-shrink:0;">רגש</span>
+        <span class="body" style="color:var(--mid);">מה היא מרגישה? מה האנרגיה?</span>
+      </div>
+      <div style="display:flex; gap:12px; align-items:baseline; grid-column:1/-1;">
+        <span style="color:#6ABDB5; font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; flex-shrink:0;">סגנון</span>
+        <span class="body" style="color:var(--mid);">מצלמה, עדשה, film grain, color grade</span>
+      </div>
+    </div>
+    <p class="body" style="margin-top:28px; color:var(--faint); font-style:italic">
+      אין תשובה לא נכונה — יש רק פרומפט ראשון.
+    </p>
+    <div class="counter">17 — 23</div>
+  </div>
+
+  <!-- SECTION BREAK — יצירת דמות -->
+  <div class="slide section-break">
+    <div class="eyebrow">עכשיו — <span>חלק ב׳</span></div>
+    <h1>יצירת דמות.</h1>
+    <p class="sub">עכשיו נהפוך מישהי אמיתית לדמות שלך.</p>
+    <div class="counter">18 — 23</div>
+  </div>
+
+  <!-- ג'ייסון + רפרנס -->
+  <div class="slide" style="padding: 0; flex-direction: row;">
+    <div style="flex:1; height:100%; overflow:hidden; position:relative;">
+      <img src="images/שיעור-03/ג׳ייסון/מקור מפינטרסט.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+      <div style="position:absolute;bottom:16px;right:16px;background:rgba(25,25,23,0.75);color:rgba(244,242,237,0.7);font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:5px 10px;">reference</div>
+    </div>
+    <div style="flex:1; padding:64px 6vw; display:flex; flex-direction:column; justify-content:center;">
+      <div class="eyebrow">הכלי הראשון</div>
+      <div class="dash"></div>
+      <p class="statement" style="font-size:clamp(18px,2.2vw,32px);">
+        ג'ייסון הוא לא שם.<br>
+        <em>ג'ייסון הוא רשימת מכולת לבינה.</em>
+      </p>
+      <p class="body" style="margin-top:24px;">
+        מביאים תמונה של מישהי אמיתית —<br>
+        ונותנים לג'ייסון לתאר אותה למידג'רני.<br><br>
+        כמו לצלם פספורט —<br>
+        רק שהפספורט יוצא <strong>יפה יותר מהאמת.</strong>
+      </p>
+    </div>
+    <div class="counter">19 — 23</div>
+  </div>
+
+  <!-- תוצאת ג'ייסון -->
+  <div class="slide" style="padding: 0; flex-direction: row;">
+    <div style="flex:1; height:100%; overflow:hidden; position:relative;">
+      <img src="images/שיעור-03/ג׳ייסון/מקור מפינטרסט.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+      <div style="position:absolute;bottom:16px;right:16px;background:rgba(25,25,23,0.75);color:rgba(244,242,237,0.7);font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:5px 10px;">לפני</div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center;width:48px;flex-shrink:0;color:var(--gold);font-size:20px;">→</div>
+    <div style="flex:1; height:100%; overflow:hidden; position:relative;">
+      <img src="images/שיעור-03/ג׳ייסון/דומה למקור.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+      <div style="position:absolute;bottom:16px;left:16px;background:rgba(196,150,90,0.9);color:#F4F2ED;font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:5px 10px;">ג׳ייסון</div>
+    </div>
+    <div class="counter">20 — 23</div>
+  </div>
+
+  <!-- תמונה נקייה -->
+  <div class="slide" style="padding: 0; flex-direction: row;">
+    <div style="flex:1; height:100%; overflow:hidden; position:relative;">
+      <img src="images/שיעור-03/ג׳ייסון/נקי/נקי.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+      <div style="position:absolute;bottom:16px;left:16px;background:rgba(196,150,90,0.9);color:#F4F2ED;font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:5px 10px;">התוצאה</div>
+    </div>
+    <div style="flex:1; padding:52px 6vw; display:flex; flex-direction:column; justify-content:center;">
+      <div class="eyebrow">תמונה נקייה</div>
+      <h2 style="margin-bottom:16px; font-size:clamp(22px,3vw,40px);">הדרכון של הדמות.</h2>
+      <p class="body" style="margin-bottom:24px;">
+        רקע אפור. תאורת סטודיו. פנים ברורות.<br>
+        לא דרמה. לא רגש. <strong>רק היא.</strong><br><br>
+        זו התמונה שממנה הכל יוצא.
+      </p>
+      <div class="copy-wrap">
+        <div class="code-block" id="clean-prompt" style="font-size:10px; line-height:1.8; padding-left:68px;">
+          <span class="cm">// clean portrait prompt</span><br>
+          ultra-realistic studio portrait, tight face centered,<br>
+          neutral calm expression, soft diffused studio lighting,<br>
+          realistic skin texture, solid neutral wardrobe,<br>
+          seamless backdrop <span class="kw">#EDEDED</span>, light grey background,<br>
+          subtle film grain, matte editorial finish,<br>
+          <span class="kw">85mm portrait lens</span>, shallow depth of field,<br>
+          focus on eyes, straight-on angle, <span class="kw">--ar 3:4</span>
+        </div>
+        <button class="copy-btn" onclick="copyText('clean-prompt', this)">העתק</button>
+      </div>
+    </div>
+    <div class="counter">21 — 23</div>
+  </div>
+
+  <!-- קרקטר שיט -->
+  <div class="slide" style="padding: 0; flex-direction: row;">
+    <div style="flex:1.2; height:100%; overflow:hidden; position:relative;">
+      <img src="images/שיעור-03/ג׳ייסון/קרקטר שיט/Create_a_characte.png" style="width:100%;height:100%;object-fit:cover;display:block;">
+    </div>
+    <div style="flex:1; padding:52px 5vw; display:flex; flex-direction:column; justify-content:center;">
+      <div class="eyebrow">הכלי השני</div>
+      <h2 style="margin-bottom:16px; font-size:clamp(22px,3vw,40px);">Character Sheet</h2>
+      <p class="body" style="margin-bottom:24px;">
+        8 תמונות מכל הזוויות —<br>
+        פנים, פרופיל, גוף, ביגוד, נעליים.<br><br>
+        כי בלי זה — כל סצנה היא מישהי אחרת<br>
+        שקוראים לה אותו שם.
+      </p>
+      <div class="copy-wrap">
+        <div class="code-block" id="cs-prompt" style="font-size:10px; line-height:1.8; padding-left:68px;">
+          Create a character sheet with at least 8 images<br>
+          from various angles of the character,<br>
+          including face, body, clothing and shoes.<br>
+          [Image 1] I attached the character's face<br>
+          [Images 2-4] to maintain consistency throughout.<br>
+          Everything must look realistic and clear.
+        </div>
+        <button class="copy-btn" onclick="copyText('cs-prompt', this)">העתק</button>
+      </div>
+    </div>
+    <div class="counter">22 — 23</div>
+  </div>
+
+  <!-- תרגיל סיום -->
+  <div class="slide">
+    <div class="eyebrow">תרגיל סיום</div>
+    <h2>עכשיו צרו אחת שלכן.</h2>
+    <div class="ex-list">
+      <div class="ex-item">
+        <div class="ex-num">01</div>
+        <div style="font-size:clamp(15px,1.6vw,19px); font-weight:400; line-height:1.5;">מצאו רפרנס — מישהי שאת רוצות שהדמות שלכן תיראה כמוה.</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-num">02</div>
+        <div style="font-size:clamp(15px,1.6vw,19px); font-weight:400; line-height:1.5;">הריצו את פרומפט הנקי — וקבלו את הדרכון שלה.</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-num">03</div>
+        <div style="font-size:clamp(15px,1.6vw,19px); font-weight:400; line-height:1.5;">בנו קרקטר שיט — 8 זוויות עם התמונה הנקייה כ-reference.</div>
+      </div>
+    </div>
+    <p class="body" style="margin-top:32px; color:var(--faint); font-style:italic;">מי שסיימת — שתפי בקבוצה. רוצות לראות.</p>
+    <div class="counter">23 — 23</div>
+  </div>
+
+</div><!-- /deck -->
+
+<!-- nav dots -->
+<div id="dots"></div>
+
+<!-- arrows -->
+<div class="arrow" id="prev" onclick="go(cur-1)">→</div>
+<div class="arrow" id="next" onclick="go(cur+1)">←</div>
+
+<script>
+  let cur = 0;
+  const slides = document.querySelectorAll('.slide');
+  const dotsEl = document.getElementById('dots');
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' on' : '');
+    d.onclick = () => go(i);
+    dotsEl.appendChild(d);
+  });
+
+  function go(n) {
+    slides[cur].classList.remove('active');
+    dotsEl.children[cur].classList.remove('on');
+    cur = (n + slides.length) % slides.length;
+    slides[cur].classList.add('active');
+    dotsEl.children[cur].classList.add('on');
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft')  go(cur + 1);
+    if (e.key === 'ArrowRight') go(cur - 1);
+  });
+</script>
+</body>
+</html>
