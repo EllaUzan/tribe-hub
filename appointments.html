@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>פגישות אישיות · השבט</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Heebo:wght@200;300;400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100%;
+      font-family: 'Heebo', sans-serif;
+      background: #080a0e;
+      color: #fff;
+    }
+
+    /* ─── BG ─── */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .bg video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.35;
+    }
+
+    .bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to bottom, rgba(8,10,14,0.6) 0%, rgba(8,10,14,0.3) 40%, rgba(8,10,14,0.85) 100%);
+      z-index: 1;
+    }
+
+    /* ─── LAYOUT ─── */
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 60px 32px 100px;
+    }
+
+    /* ─── BACK ─── */
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      color: rgba(255,255,255,0.65);
+      text-decoration: none;
+      text-transform: uppercase;
+      margin-bottom: 52px;
+      transition: color 0.2s;
+    }
+
+    .back:hover { color: rgba(255,255,255,0.9); }
+
+    /* ─── HEADER ─── */
+    .header {
+      margin-bottom: 40px;
+    }
+
+    .header-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      color: rgba(255,255,255,0.60);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .header h1 {
+      font-size: clamp(30px, 5vw, 46px);
+      font-weight: 900;
+      line-height: 1.15;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+
+    .header h1 em {
+      font-style: normal;
+      color: #ff3366;
+    }
+
+    .header-sub {
+      font-size: 15px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.90);
+      line-height: 1.7;
+    }
+
+    /* ─── INFO PILLS ─── */
+    .pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .pill {
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      color: rgba(255,255,255,0.85);
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      padding: 5px 11px;
+      border-radius: 20px;
+      text-transform: uppercase;
+    }
+
+    .pill em {
+      color: #ff3366;
+      font-style: normal;
+    }
+
+    /* ─── DIVIDER ─── */
+    .divider {
+      width: 40px;
+      height: 1px;
+      background: rgba(255,255,255,0.15);
+      margin: 40px 0;
+    }
+
+    /* ─── SECTION ─── */
+    .section-label {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: rgba(255,255,255,0.85);
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    /* ─── HOW IT WORKS ─── */
+    .how {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 40px;
+    }
+
+    .how-item {
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .how-num {
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: #ff3366;
+      letter-spacing: 0.1em;
+      padding-top: 2px;
+    }
+
+    .how-text {
+      font-size: 14px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.82);
+      line-height: 1.7;
+    }
+
+    .how-text strong {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* ─── CALENDAR FRAME ─── */
+    .cal-wrap {
+      margin-top: 24px;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: #fff;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+
+    .cal-wrap iframe {
+      display: block;
+      width: 100%;
+      height: 720px;
+      border: 0;
+    }
+
+    @media (max-width: 600px) {
+      .cal-wrap iframe { height: 640px; }
+    }
+
+    /* ─── NOTE ─── */
+    .note {
+      margin-top: 40px;
+      padding: 22px 24px;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+    }
+
+    .note p {
+      font-size: 14px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.78);
+      line-height: 1.8;
+    }
+
+    .note p + p { margin-top: 10px; }
+
+    .note a {
+      color: rgba(255,100,140,0.9);
+      text-decoration: none;
+    }
+
+    .note a:hover { color: #ff3366; }
+
+    /* ─── BACK BTN ─── */
+    .back-btn {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 16px;
+      height: 36px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.80);
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+      z-index: 100;
+    }
+    .back-btn:hover {
+      background: rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.95);
+      border-color: rgba(255,255,255,0.3);
+    }
+
+    /* ─── SOUND ─── */
+    .sound-btn {
+      position: fixed;
+      bottom: 28px;
+      left: 28px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.78);
+      font-size: 15px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, color 0.2s;
+      z-index: 10;
+      backdrop-filter: blur(8px);
+    }
+
+    .sound-btn:hover { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.95); }
+    .sound-btn.playing { border-color: rgba(255,51,102,0.4); color: #ff3366; }
+  </style>
+</head>
+<body>
+
+  <div class="bg">
+    <video autoplay muted loop playsinline>
+      <source src="bg.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <a class="back-btn" href="index.html">← ארגז הכלים</a>
+
+  <div class="page">
+
+    <a class="back" href="index.html">← ארגז הכלים</a>
+
+    <div class="header">
+      <div class="header-eyebrow">The Tribe · 1-on-1</div>
+      <h1>פגישות<br /><em>אישיות</em></h1>
+      <p class="header-sub">ביקורת עבודה בארבע עיניים — זמן פרטי איתי לצלול לפרויקט שלך, לקבל פידבק ולהבין לאן ממשיכים.</p>
+      <div class="pills">
+        <span class="pill"><em>✦</em> 1-on-1</span>
+        <span class="pill">ZOOM</span>
+        <span class="pill">בחרי את השעה שלך</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section-label">איך זה עובד</div>
+
+    <div class="how">
+      <div class="how-item">
+        <div class="how-num">01</div>
+        <div class="how-text"><strong>בוחרים סלוט.</strong> בלוח למטה תראו את כל הזמנים הפנויים — לחצו על הזמן שמתאים.</div>
+      </div>
+      <div class="how-item">
+        <div class="how-num">02</div>
+        <div class="how-text"><strong>ממלאים פרטים.</strong> שם, אימייל, ובקצרה — על מה תרצו לקבל ביקורת.</div>
+      </div>
+      <div class="how-item">
+        <div class="how-num">03</div>
+        <div class="how-text"><strong>מקבלים זימון.</strong> הפגישה נכנסת אוטומטית ליומן שלכן עם קישור Zoom.</div>
+      </div>
+    </div>
+
+    <div class="section-label">בחרי סלוט</div>
+
+    <div class="cal-wrap">
+      <!-- Google Calendar Appointment Scheduling begin -->
+      <iframe src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ00WJtKYOycxHiELdIzuVxzmVlIVVDENaCuBX7trkvVDfnb44aLKpVNss-ZVoeI-_BNRidPniTo?gv=true" frameborder="0"></iframe>
+      <!-- end Google Calendar Appointment Scheduling -->
+    </div>
+
+    <div class="note">
+      <p>לפני הפגישה — נסו להכין את העבודה שאתן רוצות שנסתכל עליה, ומה הכי מטריד אתכן בה כרגע.</p>
+      <p>אם אין סלוט שמתאים או שאת צריכה לשנות — <a href="index.html">חזרי לארגז הכלים</a> או פני אליי ישירות.</p>
+    </div>
+
+  </div>
+
+  <button class="sound-btn" id="soundBtn" onclick="toggleSound()"><span id="soundIcon">♪</span></button>
+  <audio id="ambient" src="ambient.mp3" loop></audio>
+
+  <script>
+    const audio = document.getElementById('ambient');
+    const btn = document.getElementById('soundBtn');
+    const icon = document.getElementById('soundIcon');
+
+    function startOnInteraction() {
+      audio.play().then(() => { btn.classList.add('playing'); icon.textContent = '♫'; }).catch(()=>{});
+      document.removeEventListener('click', startOnInteraction);
+      document.removeEventListener('touchstart', startOnInteraction);
+    }
+    document.addEventListener('click', startOnInteraction);
+    document.addEventListener('touchstart', startOnInteraction);
+
+    window.addEventListener('pagehide', () => { audio.pause(); });
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') audio.pause(); });
+
+    function toggleSound() {
+      if (audio.paused) {
+        audio.play();
+        btn.classList.add('playing');
+        icon.textContent = '♫';
+      } else {
+        audio.pause();
+        btn.classList.remove('playing');
+        icon.textContent = '♪';
+      }
+    }
+  </script>
+
+</body>
+</html>
