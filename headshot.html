@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>פרומפט תמונת תדמית · השבט</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Heebo:wght@200;300;400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100%;
+      font-family: 'Heebo', sans-serif;
+      background: #080a0e;
+      color: #fff;
+    }
+
+    /* ─── BG ─── */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .bg video.bg-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.18;
+    }
+
+    .bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(8,10,14,0.6) 0%, rgba(8,10,14,0.2) 40%, rgba(8,10,14,0.92) 100%);
+      z-index: 1;
+    }
+
+    /* ─── BACK BTN ─── */
+    .back-btn {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0 16px;
+      height: 36px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.80);
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+      z-index: 100;
+    }
+    .back-btn:hover {
+      background: rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.85);
+      border-color: rgba(255,255,255,0.85);
+    }
+
+    /* ─── PAGE ─── */
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 80px 32px 100px;
+    }
+
+    /* ─── HEADER ─── */
+    .header {
+      margin-bottom: 48px;
+    }
+
+    .header-eyebrow {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      color: rgba(255,255,255,0.85);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .header h1 {
+      font-size: clamp(28px, 5vw, 44px);
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+
+    .header h1 em {
+      font-style: normal;
+      color: #ff3366;
+    }
+
+    .header-sub {
+      font-size: 14px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.70);
+      line-height: 1.75;
+    }
+
+    /* ─── STEPS ─── */
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 36px;
+    }
+
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 18px 22px;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.025);
+    }
+
+    .step-num {
+      font-family: 'Cinzel', serif;
+      font-size: 14px;
+      color: #ff3366;
+      flex-shrink: 0;
+      min-width: 24px;
+      letter-spacing: 0.05em;
+      padding-top: 1px;
+    }
+
+    .step-text {
+      font-size: 15px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.90);
+      line-height: 1.75;
+    }
+
+    .step-text strong {
+      font-weight: 700;
+      color: #fff;
+    }
+
+    /* ─── PROMPT BLOCK ─── */
+    .prompt-section {
+      margin-top: 16px;
+    }
+
+    .prompt-label {
+      font-family: 'Cinzel', serif;
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      color: rgba(255,51,102,0.85);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .prompt-wrap {
+      position: relative;
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 14px;
+      background: rgba(255,255,255,0.035);
+      padding: 22px 26px 22px 26px;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 14px;
+      height: 32px;
+      border-radius: 18px;
+      background: rgba(255,51,102,0.12);
+      border: 1px solid rgba(255,51,102,0.45);
+      color: #ff3366;
+      font-family: 'Cinzel', serif;
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.15s;
+      z-index: 5;
+    }
+
+    .copy-btn:hover {
+      background: rgba(255,51,102,0.22);
+      border-color: rgba(255,51,102,0.85);
+    }
+
+    .copy-btn:active { transform: scale(0.97); }
+
+    .copy-btn.copied {
+      background: rgba(120,220,140,0.15);
+      border-color: rgba(120,220,140,0.6);
+      color: #7ee0a3;
+    }
+
+    .copy-icon {
+      width: 12px;
+      height: 12px;
+      display: inline-block;
+      stroke: currentColor;
+      stroke-width: 1.6;
+      fill: none;
+    }
+
+    .prompt {
+      font-family: 'Heebo', sans-serif;
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.85;
+      color: rgba(255,255,255,0.92);
+      white-space: pre-wrap;
+      direction: ltr;
+      text-align: left;
+      padding-top: 28px;
+    }
+
+    .prompt-tagline {
+      display: block;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 14px;
+    }
+
+    /* ─── SOUND ─── */
+    .sound-btn {
+      position: fixed;
+      bottom: 28px;
+      left: 28px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.78);
+      font-size: 15px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, color 0.2s;
+      z-index: 10;
+      backdrop-filter: blur(8px);
+    }
+    .sound-btn:hover { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.8); }
+    .sound-btn.playing { border-color: rgba(255,51,102,0.4); color: #ff3366; }
+
+    @media (max-width: 600px) {
+      .page { padding: 72px 20px 80px; }
+      .prompt-wrap { padding: 20px 18px; }
+      .prompt { font-size: 13px; padding-top: 32px; }
+      .copy-btn { top: 12px; left: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg">
+    <video class="bg-video" autoplay muted loop playsinline>
+      <source src="bg.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <a class="back-btn" href="index.html">← ארגז הכלים</a>
+
+  <div class="page">
+
+    <div class="header">
+      <div class="header-eyebrow">The Tribe · Headshot Prompt</div>
+      <h1>איך ליצור<br /><em>תמונת תדמית מקצועית</em><br />עם ChatGPT</h1>
+      <p class="header-sub">שלושה צעדים פשוטים — והפרומפט המלא מוכן להעתקה למטה.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <span class="step-num">I</span>
+        <div class="step-text">תעלו <strong>4 תמונות</strong> שלכם.</div>
+      </div>
+      <div class="step">
+        <span class="step-num">II</span>
+        <div class="step-text">תפעילו את הצ׳ט על מצב <strong>"thinking" 5.5</strong>.</div>
+      </div>
+      <div class="step">
+        <span class="step-num">III</span>
+        <div class="step-text">תעתיקו את הפרומפט הבא והדביקו לצ׳ט.</div>
+      </div>
+    </div>
+
+    <div class="prompt-section">
+      <div class="prompt-label">The Prompt</div>
+      <div class="prompt-wrap">
+        <button class="copy-btn" id="copyBtn" onclick="copyPrompt()" title="העתק פרומפט">
+          <svg class="copy-icon" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
+          <span id="copyLabel">Copy</span>
+        </button>
+        <div class="prompt" id="promptText"><span class="prompt-tagline">a corporate headshot of this person</span>Use the attached image as the exact facial reference. Create a hyperrealistic professional studio editorial portrait that preserves the person's facial identity, proportions, expression, and natural features.
+
+Portrait style: contemporary high-end photography. Framing: medium head-and-shoulders shot, 4:5 aspect ratio. Pose: direct gaze into camera, neutral expression. Background: pure uniform black, no texture, no visible environment.
+
+Lighting: soft studio lighting with a side key light and gentle fill. Add subtle side chiaroscuro for depth and separation from the black background.
+
+Skin: natural, realistic skin texture with fine detail. No smoothing, no plastic effect, no artificial shine. Eyes: very sharp focus, crisp catchlights, high detail. Lens look: 85mm portrait lens, shallow depth of field. Color: neutral color correction, natural tones. Output: high-resolution, clean editorial portrait.
+
+Negative prompt: No caricature. No painting or illustration style. No fake skin. No facial distortion. No exaggerated smile. No glossy or artificial skin. No visible background elements. No texture in the background. No overprocessed retouching.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <button class="sound-btn" id="soundBtn" onclick="toggleSound()"><span id="soundIcon">♪</span></button>
+  <audio id="ambient" src="ambient.mp3" loop></audio>
+
+  <script>
+    function copyPrompt() {
+      const btn = document.getElementById('copyBtn');
+      const label = document.getElementById('copyLabel');
+      const text = document.getElementById('promptText').innerText;
+
+      const done = () => {
+        btn.classList.add('copied');
+        label.textContent = 'Copied ✓';
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          label.textContent = 'Copy';
+        }, 1800);
+      };
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(() => {
+          fallbackCopy(text); done();
+        });
+      } else {
+        fallbackCopy(text); done();
+      }
+    }
+
+    function fallbackCopy(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+    }
+
+    const audio = document.getElementById('ambient');
+    const btn = document.getElementById('soundBtn');
+    const icon = document.getElementById('soundIcon');
+
+    function startOnInteraction() {
+      audio.play().then(() => { btn.classList.add('playing'); icon.textContent = '♫'; }).catch(()=>{});
+      document.removeEventListener('click', startOnInteraction);
+      document.removeEventListener('touchstart', startOnInteraction);
+    }
+    document.addEventListener('click', startOnInteraction);
+    document.addEventListener('touchstart', startOnInteraction);
+
+    window.addEventListener('pagehide', () => { audio.pause(); });
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') audio.pause(); });
+
+    function toggleSound() {
+      if (audio.paused) { audio.play(); btn.classList.add('playing'); icon.textContent = '♫'; }
+      else { audio.pause(); btn.classList.remove('playing'); icon.textContent = '♪'; }
+    }
+  </script>
+
+</body>
+</html>
