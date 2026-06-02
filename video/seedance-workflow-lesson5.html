@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>השבט — שיעור 5 — Storyboard to Seedance</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;900&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Heebo', sans-serif;
+    background: #1a1a1a;
+    height: 100vh;
+    overflow: hidden;
+  }
+  .deck { width: 100vw; height: 100vh; position: relative; }
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 58px 80px 96px;
+    background: #fff;
+  }
+  .slide.active { display: flex; }
+  .slide.dark { background: #1a1a1a; }
+  .slide.media-slide { padding: 36px 56px 92px; }
+  .slide.hero {
+    background:
+      linear-gradient(90deg, rgba(26,26,26,0.94) 0%, rgba(26,26,26,0.78) 45%, rgba(26,26,26,0.46) 100%),
+      url("assets/storyboard-lesson/lonely-living-room-storyboard.png") center / cover no-repeat;
+  }
+  .content {
+    width: 100%;
+    max-width: 920px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+  .content.wide { max-width: 1120px; }
+  .content.centered { align-items: center; text-align: center; }
+  .label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #c97b63;
+  }
+  h1 {
+    font-size: clamp(56px, 9vw, 124px);
+    font-weight: 900;
+    line-height: 0.95;
+    color: #fff;
+    letter-spacing: 0;
+  }
+  h2 {
+    font-size: clamp(31px, 4.3vw, 54px);
+    font-weight: 900;
+    line-height: 1.08;
+    color: #1a1a1a;
+    letter-spacing: 0;
+  }
+  .dark h2 { color: #fff; }
+  .sub {
+    font-size: clamp(15px, 1.6vw, 20px);
+    line-height: 1.8;
+    font-weight: 300;
+    color: rgba(255,255,255,0.55);
+  }
+  .body {
+    font-size: clamp(15px, 1.55vw, 19px);
+    line-height: 1.78;
+    font-weight: 300;
+    color: #555;
+  }
+  .body strong { color: #1a1a1a; font-weight: 700; }
+  .dark .body { color: rgba(255,255,255,0.68); }
+  .dark .body strong { color: #fff; }
+  .punch {
+    font-size: clamp(14px, 1.35vw, 17px);
+    line-height: 1.65;
+    font-weight: 700;
+    color: #c97b63;
+    padding-top: 18px;
+    border-top: 1px solid #f0ece8;
+  }
+  .dark .punch { border-top-color: rgba(255,255,255,0.13); }
+  .bar { width: 42px; height: 3px; background: #c97b63; border-radius: 2px; }
+  .bar.white { background: rgba(255,255,255,0.22); }
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .card {
+    background: #f7f4f1;
+    border: 1.5px solid #ece8e3;
+    border-radius: 14px;
+    padding: 22px 24px;
+    min-height: 150px;
+  }
+  .card .num {
+    color: #c97b63;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.16em;
+    margin-bottom: 12px;
+  }
+  .card h3 {
+    font-size: 22px;
+    line-height: 1.25;
+    color: #1a1a1a;
+    margin-bottom: 10px;
+  }
+  .card p {
+    font-size: 14px;
+    line-height: 1.65;
+    color: #666;
+  }
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: stretch;
+  }
+  .panel {
+    background: #f7f4f1;
+    border: 1.5px solid #ece8e3;
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .panel h3 { color: #1a1a1a; font-size: 22px; line-height: 1.25; }
+  .panel p, .panel li { color: #555; font-size: 15px; line-height: 1.75; }
+  .panel ul, .panel ol { padding-right: 21px; }
+  .dark .panel { background: #101010; border-color: rgba(255,255,255,0.14); }
+  .dark .panel h3 { color: #fff; }
+  .dark .panel p, .dark .panel li { color: rgba(255,255,255,0.68); }
+  .media-grid {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: 22px;
+    align-items: stretch;
+  }
+  .reference-board {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .reference-board img {
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border: 1.5px solid #ece8e3;
+  }
+  video, img {
+    width: 100%;
+    display: block;
+    border-radius: 16px;
+    background: #111;
+  }
+  .video-box {
+    background: #111;
+    border-radius: 16px;
+    overflow: hidden;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+  }
+  .video-box video {
+    height: auto;
+    max-height: 68vh;
+    object-fit: contain;
+  }
+  .copy-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-height: 0;
+  }
+  .copy-box {
+    background: #f7f4f1;
+    border: 1.5px solid #ece8e3;
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 0;
+  }
+  .copy-box strong {
+    direction: ltr;
+    text-align: left;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #c97b63;
+  }
+  textarea {
+    width: 100%;
+    border: 0;
+    outline: 0;
+    resize: none;
+    background: transparent;
+    direction: ltr;
+    text-align: left;
+    font-family: 'Courier New', monospace;
+    font-size: 11.5px;
+    line-height: 1.62;
+    color: #555;
+  }
+  textarea.prompt { height: 42vh; }
+  textarea.short { height: 86px; }
+  .storyboard-img {
+    max-height: 68vh;
+    object-fit: contain;
+    border: 1.5px solid #ece8e3;
+  }
+  .timeline {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+  }
+  .beat {
+    border: 1.5px solid #ece8e3;
+    border-radius: 12px;
+    padding: 14px 12px;
+    background: #f7f4f1;
+    min-height: 130px;
+  }
+  .beat b {
+    display: block;
+    color: #c97b63;
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+  .beat span {
+    display: block;
+    color: #1a1a1a;
+    font-weight: 700;
+    line-height: 1.35;
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+  .beat p { color: #666; font-size: 12.5px; line-height: 1.45; }
+  .nav {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    z-index: 20;
+  }
+  .nav button {
+    background: none;
+    border: 1.5px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.44);
+    font-family: 'Heebo', sans-serif;
+    font-size: 13px;
+    padding: 8px 20px;
+    border-radius: 100px;
+    cursor: pointer;
+  }
+  .nav button:hover { background: #fff; color: #1a1a1a; border-color: #fff; }
+  .nav .counter { min-width: 50px; text-align: center; color: rgba(255,255,255,0.28); font-size: 12px; }
+  @media (max-width: 900px) {
+    .slide, .slide.media-slide { padding: 36px 28px 90px; }
+    .cards, .two-col, .media-grid, .timeline { grid-template-columns: 1fr; }
+    h1 { font-size: 52px; }
+    h2 { font-size: 30px; }
+    textarea.prompt { height: 32vh; }
+  }
+</style>
+</head>
+<body>
+<div class="deck">
+
+  <section class="slide dark hero active">
+    <div class="content">
+      <div class="label">שיעור 5 — השבט · וידאו AI</div>
+      <h1>Storyboard<br>to Prompt</h1>
+      <div class="bar white"></div>
+      <p class="sub">איך מתכננים וידאו לפני שמבקשים מהמודל ליצור אותו.</p>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="content">
+      <div class="label">מה זה סטוריבורד</div>
+      <div class="bar"></div>
+      <h2>סטוריבורד הוא תוכנית העבודה<br>של הווידאו.</h2>
+      <p class="body">
+        סטוריבורד מפרק רעיון לרצף של פריימים: מה רואים, מה קורה, באיזה סדר,
+        איפה המצלמה נמצאת, ואיך הרגש משתנה לאורך הזמן.
+      </p>
+      <p class="punch">מודבורד מגדיר שפה. סטוריבורד מגדיר מה קורה בזמן.</p>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="content wide">
+      <div class="label">למה זה חשוב ב־Seedance</div>
+      <div class="bar"></div>
+      <h2>וידאו לא צריך רק וייב.<br>הוא צריך רצף.</h2>
+      <div class="cards">
+        <div class="card">
+          <div class="num">01</div>
+          <h3>המודל צריך לדעת מה קודם</h3>
+          <p>אם לא מגדירים התחלה, שינוי וסוף, Seedance ממלא את הפערים לבד.</p>
+        </div>
+        <div class="card">
+          <div class="num">02</div>
+          <h3>רגש נבנה בזמן</h3>
+          <p>פחד, הפתעה, הקלה, חום. אלה לא מילים בפרומפט, אלא רגעים.</p>
+        </div>
+        <div class="card">
+          <div class="num">03</div>
+          <h3>כל שוט צריך תפקיד</h3>
+          <p>שוט פתיחה, שוט פעולה, שוט תגובה, שוט סיום. אחרת מקבלים קליפ יפה ומבולבל.</p>
+        </div>
+      </div>
+      <p class="punch">ב־Seedance הפרומפט הטוב ביותר מתנהג כמו סטוריבורד כתוב.</p>
+    </div>
+  </section>
+
+  <section class="slide media-slide">
+    <div class="content wide">
+      <div class="label">הילד, הכדור, והחבורה</div>
+      <div class="bar"></div>
+      <div class="media-grid">
+        <div class="video-box">
+          <video controls playsinline>
+            <source src="assets/storyboard-lesson/boy-football.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="copy-stack">
+          <h2>תוצאה שנראית פשוטה.<br>תכנון שלא היה פשוט.</h2>
+          <p class="body">
+            זה לא רק “ילד משחק כדורגל”. יש כאן רצף רגשי ברור:
+            משחק לבד, נפילה, חשש, הפתעה, עזרה, הקלה, סיום חם.
+          </p>
+          <p class="punch">עכשיו נפרק איך פרומפט כזה בנוי כמו סטוריבורד.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="content wide">
+      <div class="label">הרצף הרגשי</div>
+      <div class="bar"></div>
+      <h2>לפני הפרומפט יש סיפור.</h2>
+      <div class="timeline">
+        <div class="beat"><b>0-2s</b><span>העולם רגוע</span><p>ילד משחק לבד. הכל נקי, חם ובטוח.</p></div>
+        <div class="beat"><b>2-4s</b><span>משהו משתבש</span><p>הוא נופל. הכדור מגיע לחבורה.</p></div>
+        <div class="beat"><b>4-6s</b><span>מתח</span><p>החבורה נראית מאיימת. הילד מצפה לצרות.</p></div>
+        <div class="beat"><b>6-8s</b><span>היפוך</span><p>הנער מתכופף במקום להיות רע.</p></div>
+        <div class="beat"><b>8-12s</b><span>טיפול</span><p>מרימים אותו, מנקים אבק, מחזירים כדור.</p></div>
+        <div class="beat"><b>12-15s</b><span>נחיתה</span><p>חיוך, הקלה, פרידה באור חם.</p></div>
+      </div>
+      <p class="punch">זה סטוריבורד: לא רשימת תמונות, אלא שינוי רגשי עם זמן.</p>
+    </div>
+  </section>
+
+  <section class="slide media-slide">
+    <div class="content wide">
+      <div class="label">Seedance Prompt</div>
+      <div class="bar"></div>
+      <div class="media-grid">
+        <div class="copy-box">
+          <strong>Seedance 2.0 Prompt</strong>
+          <textarea class="prompt" readonly>15-second cinematic stylized 3D animation, 16:9, clean outdoor neighborhood park setting, warm late-afternoon sunlight, emotional storytelling, wholesome tone, polished family-friendly look.
+
+A small boy around 6 years old is playing football on a clean paved path beside a neat neighborhood park. He has soft dark hair, big brown eyes, a round expressive face, and wears a yellow t-shirt, blue shorts, white socks, and small sneakers. He kicks a black-and-white football while playing alone in a clean open area with trimmed grass, benches, trees, a low fence, and soft golden sunlight. The setting must feel bright, clean, safe, and tidy.
+
+Nearby is a group of 4 teenage boys with a classic animated tough-kid vibe. They wear varsity jackets, hoodies, jeans, sneakers, and wristbands. One is taller and looks like the leader. Another has folded arms, one has messy hair, and one carries a skateboard. They look intimidating at first with stern expressions, confident body language, and slow approach, but they are not evil. Their behavior turns kind and protective.
+
+0-2s:
+Wide side-tracking shot. The little boy happily plays football alone on the clean park path, lightly dribbling and kicking the ball. Warm golden sunlight, soft shadows, trimmed grass, trees, benches, and a neat neighborhood background. The teen group stands nearby in the distance, casually watching.
+
+2-4s:
+The boy runs after the ball, stumbles, and trips forward. The football rolls away and lightly bumps into the shoe or leg of the tallest teen. The boy lands on the clean pavement and gets a little dust on his knee and shin. His face changes from playful to scared and embarrassed. Camera moves closer to the boy on the ground and the ball near the teen gang.
+
+4-6s:
+Dramatic medium close-ups of the teen gang noticing him. The tallest teen looks down seriously. Another teen steps forward. Use slightly tense framing and subtle motion emphasis so they feel intimidating at first. The boy looks up nervously, expecting trouble. Keep the environment clean and bright, not dark or gritty.
+
+6-8s:
+Wide shot. The teen group walks toward the boy in a slow, slightly intimidating way. The boy stays frozen, nervous, sitting or kneeling on the ground. Then the mood begins to soften as the lead teen crouches down in front of him instead of acting mean. The others gather around calmly.
+
+8-10s:
+Close emotional interaction shot. The lead teen gently reaches down and helps the little boy stand up. Another teen picks up the football and holds it nearby. One brushes a little dust off the boy's knee and lower leg in a careful older-brother way. Their faces shift from stern to warm and reassuring.
+
+10-12s:
+Medium close-up. The lead teen gives the boy his football back and lightly taps or pats him on the head with a soft smile, like a protective big brother. The boy looks surprised, then relieved. Another teen gives a small encouraging nod. Warm sunlight glows around them.
+
+12-14s:
+Close-up of the boy's face. His expression changes from fear and embarrassment to happiness and comfort. He smiles shyly, then more openly. The emotional payoff should feel gentle, wholesome, and sincere.
+
+14-15s:
+Final wide shot. The teen gang walks away casually, one waving slightly or glancing back. The little boy stands holding the football, smiling and watching them leave. He looks down at the ball, then back up with gratitude. Warm golden light, soft lens flare, clean park background, wholesome ending.
+
+Style: polished cinematic stylized 3D animation, expressive facial acting, smooth character motion, clean environment, warm golden-hour lighting, soft realistic textures, emotional body language, clear continuity, no text, no dialogue.</textarea>
+        </div>
+        <div class="copy-stack">
+          <h2>הטקסט ארוך.<br>וזה בסדר.</h2>
+          <p class="body">
+            לא צריך לקרוא את כולו עכשיו. מה שחשוב לראות הוא המבנה:
+            קודם עולם ודמויות, ואז טיימליין לפי שניות.
+          </p>
+          <div class="copy-box">
+            <strong>Rewrite Box</strong>
+            <textarea class="short" readonly>Rewrite this prompt for a completely new original idea: [YOUR IDEA]
+
+Seedance Prompt: [PASTE ABOVE SEEDANCE PROMPT]</textarea>
+          </div>
+          <p class="punch">אפשר להעתיק, להחליף רעיון, ולתת למודל לשמור על המבנה.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="content wide">
+      <div class="label">מה לומדים מהפרומפט</div>
+      <div class="bar"></div>
+      <h2>קודם מגדירים את העולם.<br>אחר כך את הרצף.</h2>
+      <div class="two-col">
+        <div class="panel">
+          <h3>לפני הטיימליין</h3>
+          <ul>
+            <li>משך, פורמט וסגנון</li>
+            <li>עולם: פארק נקי, אור אחר צהריים, תחושה בטוחה</li>
+            <li>דמות ראשית: גיל, בגדים, פנים, פעולה</li>
+            <li>דמויות משנה: מי הם ומה התפקיד הרגשי שלהם</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>בתוך הטיימליין</h3>
+          <ul>
+            <li>כל 2 שניות יש פעולה ברורה</li>
+            <li>יש שינוי רגשי בכל שלב</li>
+            <li>המצלמה מקבלת הוראות</li>
+            <li>יש מגבלות: לא אפל, לא מלוכלך, לא רעים באמת</li>
+          </ul>
+        </div>
+      </div>
+      <p class="punch">הפרומפט הטוב שומר על המודל בתוך המסלול.</p>
+    </div>
+  </section>
+
+  <section class="slide media-slide">
+    <div class="content wide">
+      <div class="label">Production Board Workflow</div>
+      <div class="bar"></div>
+      <div class="media-grid">
+        <div class="video-box">
+          <video controls playsinline>
+            <source src="assets/storyboard-lesson/production-board-ad.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="copy-stack">
+          <h2>קודם מתכננים.<br>אחר כך מייצרים.</h2>
+          <p class="body">
+            כאן הוורקפלואו מתחיל ב־15 פריימים מתוכננים:
+            מצלמה, סאונד, מוזיקה, דמויות, מוצר, תאורה ורצף.
+          </p>
+          <p class="punch">הסטוריבורד הוא לא שלב יצירתי “נחמד”. הוא בקרת איכות לפני הכסף.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="content wide">
+      <div class="label">מה השיטה מלמדת</div>
+      <div class="bar"></div>
+      <h2>הסטוריבורד הופך לפרומפט.<br>לא להפך.</h2>
+      <div class="cards">
+        <div class="card">
+          <div class="num">01</div>
+          <h3>Production Board</h3>
+          <p>בונים גריד של 15 פריימים עם זוויות מצלמה, SFX, מוזיקה, תאורה, קאסט וסצנות.</p>
+        </div>
+        <div class="card">
+          <div class="num">02</div>
+          <h3>בדיקה לפני יצירה</h3>
+          <p>בודקים רציפות, סדר שוטים, עקביות מוצר ודמויות, וכיוון מצלמה לפני Seedance.</p>
+        </div>
+        <div class="card">
+          <div class="num">03</div>
+          <h3>Seedance מקבל תוכנית</h3>
+          <p>מעתיקים את הסצנות לפרומפט, מוסיפים מה לא רוצים, ואז מתקנים בעריכה רק כשצריך.</p>
+        </div>
+      </div>
+      <p class="punch">Seedance לא צריך השראה. הוא צריך תוכנית צילום.</p>
+    </div>
+  </section>
+
+  <section class="slide dark">
+    <div class="content wide">
+      <div class="label">המשפט החשוב</div>
+      <div class="bar white"></div>
+      <h2>לא שולחים למודל רעיון.<br>שולחים לו הפקה.</h2>
+      <div class="two-col">
+        <div class="panel">
+          <h3>מה כן נכנס</h3>
+          <ul>
+            <li>מספר פריימים וסדר ברור</li>
+            <li>תנועת מצלמה לכל ביט</li>
+            <li>רציפות מוצר ודמות</li>
+            <li>הנחיית סאונד ומוזיקה</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>מה מונעים מראש</h3>
+          <ul>
+            <li>ציוד צילום בתוך הפריים</li>
+            <li>רחפנים או מצלמות שמופיעות בטעות</li>
+            <li>דיבור כשלא ביקשנו דיאלוג</li>
+            <li>כיוון תנועה הפוך או לא עקבי</li>
+          </ul>
+        </div>
+      </div>
+      <p class="sub">החלק הכי מקצועי בפרומפט הוא לפעמים ה־no.</p>
+    </div>
+  </section>
+
+  <section class="slide dark">
+    <div class="content">
+      <div class="label">הוורקפלואו</div>
+      <div class="bar white"></div>
+      <h2>איך זה עובד בפועל.</h2>
+      <p class="sub">
+        בונים סטוריבורד, מחברים רפרנסים, כותבים פרומפט לפי הביטים,
+        מייצרים וידאו, ואז חוזרים לבדוק מה נשבר: רצף, דמות, מצלמה, רגש או סגנון.
+      </p>
+      <p class="punch">העבודה היא לא פרומפט אחד. העבודה היא לולאה.</p>
+    </div>
+  </section>
+
+  <section class="slide media-slide">
+    <div class="content wide">
+      <div class="label">Editorial Jewelry Film</div>
+      <div class="bar"></div>
+      <div class="media-grid">
+        <div class="video-box">
+          <video controls playsinline>
+            <source src="assets/storyboard-lesson/fashion-editorial.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="copy-stack">
+          <h2>כשהרפרנסים מחזיקים<br>זהות, מוצר ועולם.</h2>
+          <p class="body">
+            כאן הסטוריבורד לא מתחיל מעלילה. הוא מתחיל משלושה דברים שחייבים להישאר עקביים:
+            הדוגמנית, העגיל, והעולם האדיטוריאלי.
+          </p>
+          <div class="reference-board">
+            <img src="assets/storyboard-lesson/fashion-ref-1.png" alt="">
+            <img src="assets/storyboard-lesson/fashion-ref-2.png" alt="">
+            <img src="assets/storyboard-lesson/fashion-ref-3.png" alt="">
+            <img src="assets/storyboard-lesson/fashion-ref-4.png" alt="">
+          </div>
+          <p class="punch">הווידאו מצליח כשהרפרנסים לא רק יפים, אלא מחזיקים תפקיד.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide media-slide">
+    <div class="content wide">
+      <div class="label">Same Story, Wider Frame</div>
+      <div class="bar"></div>
+      <div class="media-grid">
+        <div class="video-box">
+          <video controls playsinline>
+            <source src="assets/storyboard-lesson/fashion-editorial-wide.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="copy-stack">
+          <h2>אותו רעיון.<br>פורמט אחר.</h2>
+          <p class="body">
+            כשמשנים פורמט, לא רק “חותכים” את הווידאו. בודקים מחדש קומפוזיציה,
+            מרחק מצלמה, מקום למוצר, ואיפה העין אמורה לנחות.
+          </p>
+          <p class="punch">סטוריבורד טוב יכול לעבור פורמט, אבל צריך לבדוק מה משתנה בפריים.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide media-slide">
+    <div class="content wide">
+      <div class="label">Fashion Prompt</div>
+      <div class="bar"></div>
+      <div class="media-grid">
+        <div class="copy-box">
+          <strong>Seedance 2.0 Prompt</strong>
+          <textarea class="prompt" readonly>Use the attached model reference for the female model identity and styling. Use the attached gold earring references for the exact jewelry design. Create a high-end fashion editorial jewelry film in a premium cinematic magazine style.
+
+A powerful young female model with short slicked-back wet-look brunette hair, green-hazel eyes, luminous skin, and a sharp editorial presence stands beside a glossy black horse in a minimal cool-toned studio. She wears an oversized dark taupe tailored coat. The hero product is a pair of sculptural polished yellow-gold huggie hoop earrings with a chunky rounded form and a quilted criss-cross engraved pattern.
+
+Lighting is cool-toned, high-contrast, and sculptural, with top light, side backlight, and rim highlights shaping the model’s face, neck, ear, and the horse’s silhouette. The earrings should catch warm golden reflections and remain the visual focus.
+
+Sequence:
+1. Wide still opening tableau of the model beside the black horse in a minimal studio.
+2. Medium composed portrait of both together.
+3. Side beauty close-up revealing the jawline, ear, and earring, with the horse blurred in background.
+4. Extreme macro jewelry shot showing polished gold and engraved texture.
+5. Close-up as she brushes wet hair behind her ear, fully revealing the earring.
+6. Medium tracking shot as she walks slowly beside the horse, hand gliding along its neck.
+7. Beauty close-up with direct quiet intensity, earring catching light.
+8. Final side-profile hero composition with the horse close behind her and a clean luminous flare on the earring as camera slowly pulls back.
+
+Style:
+Slow editorial pacing, abundant negative space, minimalist luxury, refined drama, quiet power, no dialogue. Only low atmospheric music, soft hoof sounds, breathing, fabric movement, and subtle metallic accents.
+
+Maintain strict continuity of model identity, coat, horse, studio, lighting, and exact earring design throughout.</textarea>
+        </div>
+        <div class="copy-stack">
+          <h2>זה סטוריבורד<br>לפרסומת מוצר.</h2>
+          <div class="two-col" style="grid-template-columns:1fr;gap:14px;">
+            <div class="panel">
+              <h3>מה קבוע</h3>
+              <ul>
+                <li>זהות הדוגמנית</li>
+                <li>צורת העגיל</li>
+                <li>המעיל, הסוס והסטודיו</li>
+                <li>תאורה קרה עם החזרי זהב חמים</li>
+              </ul>
+            </div>
+            <div class="panel">
+              <h3>מה מתקדם בזמן</h3>
+              <ul>
+                <li>פתיחה רחבה</li>
+                <li>פורטרט</li>
+                <li>קלוז-אפ יופי</li>
+                <li>מאקרו מוצר</li>
+                <li>שוט סיום הירואי</li>
+              </ul>
+            </div>
+          </div>
+          <p class="punch">כשיש מוצר, הסטוריבורד צריך לשרת גם סיפור וגם מכירה.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide media-slide">
+    <div class="content wide">
+      <div class="label">The Lonely Living Room</div>
+      <div class="bar"></div>
+      <div class="media-grid">
+        <div class="video-box">
+          <video controls playsinline>
+            <source src="assets/storyboard-lesson/animation-final.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="copy-stack">
+          <h2>התוצאה הסופית.</h2>
+          <p class="body">
+            זו התוצאה הסופית. עכשיו חוזרים אחורה ורואים איך היא נבנתה:
+            לא בפרומפט אחד ענק, אלא בשלושה חלקים, כשכל חלק נשען על סטוריבורד ותוצאה קודמת.
+          </p>
+          <p class="punch">הדבר החשוב כאן הוא תהליך: תכנון, יצירה, המשך, שמירה על רציפות.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide media-slide">
+    <div class="content wide">
+      <div class="label">Part 1 — Memory</div>
+      <div class="bar"></div>
+      <div class="media-grid">
+        <img class="storyboard-img" src="assets/storyboard-lesson/lonely-living-room-storyboard.png" alt="">
+        <div class="copy-stack">
+          <h2>החלק הראשון<br>בונה רגש.</h2>
+          <div class="copy-box">
+            <strong>Prompt — Part 1</strong>
+            <textarea class="prompt" readonly>Create a 15-second emotional 3D animated scene in a premium Pixar-style cinematic look. Warm, nostalgic, intimate, emotionally restrained. High-end stylized 3D animation, beautiful soft practical lighting, rich cozy production design, subtle depth of field, elegant compositions, expressive facial animation, and gentle camera movement.
+
+Maintain one consistent elderly woman throughout the sequence: silver-gray hair in a soft bun, round glasses, kind expressive face, mauve cardigan, long patterned skirt, house slippers. Maintain one consistent cozy living room throughout: patterned sofa, warm table lamps, framed photos, teacup on the side table, bookshelves, flowers, window with soft evening light, a room full of memory and tenderness.
+
+Shot 1, 0:00-0:03:
+Wide shot. The elderly woman sits alone on the sofa in a quiet living room at night. The atmosphere is calm, warm, and slightly melancholic. She looks small inside a room full of memories.
+
+Shot 2, 0:03-0:05:
+Medium shot. From the corner of her eye, she notices a framed photo of her beloved dog on the side table beside a teacup. Her reaction is subtle, quiet, and emotional.
+
+Shot 3, 0:05-0:07:
+Close-up. Her hand slowly reaches toward the framed photograph. The movement is gentle and careful, as if pulled by memory and love.
+
+Shot 4, 0:07-0:10:
+Medium close-up. She lifts the framed photo and gazes at it with longing, tenderness, and recognition. Let this emotional beat breathe.
+
+Shot 5, 0:10-0:12:
+Close-up on her face. She exhales softly. Her eyes become wet with emotion. The feeling is quiet, tender, and heartbreaking.
+
+Shot 6, 0:12-0:15:
+Medium close-up. She hugs the photo to her chest and closes her eyes. Hold on the emotion for a soft, intimate final beat.
+
+Camera language:
+Use slow cinematic pacing, very gentle push-ins, soft expressive close-ups, and minimal movement. Prioritize emotion and reaction beats over action.
+
+Important:
+Maintain strict continuity of character design, wardrobe, living room set, lighting, and emotional tone across all shots. The image orientation must remain correct, not mirrored. The framed dog photo should stay readable and consistent.</textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide media-slide">
+    <div class="content wide">
+      <div class="label">Part 1 — Result</div>
+      <div class="bar"></div>
+      <div class="media-grid">
+        <div class="video-box">
+          <video controls playsinline>
+            <source src="assets/storyboard-lesson/animation-part-1.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="copy-stack">
+          <h2>הפעולה קטנה.<br>הרגש גדול.</h2>
+          <p class="body">
+            שימו לב כמה מעט “קורה”: היא יושבת, מבחינה בתמונה, מרימה אותה, מחבקת.
+            אבל בגלל שהביטים ברורים, הווידאו יודע לאן ללכת.
+          </p>
+          <p class="punch">סטוריבורד רגשי לא מחפש אקשן. הוא מחפש שינוי.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide media-slide">
+    <div class="content wide">
+      <div class="label">Part 2 — Continuity</div>
+      <div class="bar"></div>
+      <div class="media-grid">
+        <img class="storyboard-img" src="assets/storyboard-lesson/lonely-living-room-storyboard-2.png" alt="">
+        <div class="copy-stack">
+          <h2>החלק השני<br>נשען על אותו עולם.</h2>
+          <div class="copy-box">
+            <strong>Prompt — Part 2</strong>
+            <textarea class="prompt" readonly>Create a 15-second emotional 3D animated scene in a premium Pixar-style cinematic look. Warm, nostalgic, intimate, emotionally restrained. High-end stylized 3D animation, beautiful soft practical lighting, rich cozy production design, subtle depth of field, elegant compositions, expressive facial animation, and gentle camera movement.
+
+Maintain one consistent elderly woman throughout the sequence: silver-gray hair in a soft bun, round glasses, kind expressive face, mauve cardigan, long patterned skirt, house slippers. Maintain one consistent cozy living room throughout: patterned sofa, warm table lamps, framed photos, teacup on the side table, bookshelves, flowers, window with soft evening light, a room full of memory and tenderness.
+
+Shot 1, 0:00-0:03:
+Wide shot. The elderly woman sits alone on the sofa in a quiet living room at night. The atmosphere is calm, warm, and slightly melancholic. She looks small inside a room full of memories.
+
+Shot 2, 0:03-0:05:
+Medium shot. From the corner of her eye, she notices a framed photo of her beloved dog on the side table beside a teacup. Her reaction is subtle, quiet, and emotional.
+
+Shot 3, 0:05-0:07:
+Close-up. Her hand slowly reaches toward the framed photograph. The movement is gentle and careful, as if pulled by memory and love.
+
+Shot 4, 0:07-0:10:
+Medium close-up. She lifts the framed photo and gazes at it with longing, tenderness, and recognition. Let this emotional beat breathe.
+
+Shot 5, 0:10-0:12:
+Close-up on her face. She exhales softly. Her eyes become wet with emotion. The feeling is quiet, tender, and heartbreaking.
+
+Shot 6, 0:12-0:15:
+Medium close-up. She hugs the photo to her chest and closes her eyes. Hold on the emotion for a soft, intimate final beat.
+
+Camera language:
+Use slow cinematic pacing, very gentle push-ins, soft expressive close-ups, and minimal movement. Prioritize emotion and reaction beats over action.
+
+Important:
+Maintain strict continuity of character design, wardrobe, living room set, lighting, and emotional tone across all shots. The image orientation must remain correct, not mirrored. The framed dog photo should stay readable and consistent.</textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide media-slide">
+    <div class="content wide">
+      <div class="label">Part 2 — Result</div>
+      <div class="bar"></div>
+      <div class="media-grid">
+        <div class="video-box">
+          <video controls playsinline>
+            <source src="assets/storyboard-lesson/animation-part-2.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="copy-stack">
+          <h2>כאן בודקים<br>רציפות.</h2>
+          <p class="body">
+            האם היא אותה אישה? אותו סלון? אותה תאורה? אותה תחושת זיכרון?
+            ברגע שעובדים בחלקים, הרציפות הופכת למשימה בפני עצמה.
+          </p>
+          <p class="punch">כל פרומפט חדש צריך להזכיר למודל את העולם שכבר נבנה.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide media-slide">
+    <div class="content wide">
+      <div class="label">Part 3 — The Turn</div>
+      <div class="bar"></div>
+      <div class="media-grid">
+        <img class="storyboard-img" src="assets/storyboard-lesson/lonely-living-room-storyboard-3.png" alt="">
+        <div class="copy-stack">
+          <h2>החלק השלישי<br>משנה את המשמעות.</h2>
+          <div class="copy-box">
+            <strong>Prompt — Part 3</strong>
+            <textarea class="prompt" readonly>Use Video 2 as the main continuity reference for the elderly woman, the dog, the front door area, the living room, the warm lighting, the emotional tone, and the overall visual language. Optionally use Video 1 as a secondary reference to preserve the same living room design, props, and mood.
+
+Create a 15-second emotional 3D animated scene in a premium Pixar-style cinematic look. Warm, nostalgic, magical, intimate, and emotionally devastating in a restrained way. High-end stylized 3D animation, beautiful practical lighting, soft depth of field, rich cozy production design, expressive facial animation, and elegant cinematic compositions.
+
+Maintain one consistent elderly woman at the beginning of the scene: silver-gray hair in a soft bun, round glasses, kind expressive face, mauve cardigan, long patterned skirt. Maintain one consistent younger version of the same woman after the transformation: same emotional essence and recognizable facial features, but younger, radiant, and full of life. Maintain one consistent beloved dog: fluffy white-and-caramel fur, soulful eyes, familiar collar, calm and deeply connected to her.
+
+Shot 1, 0:30-0:32:
+Medium close-up. The elderly woman holds the dog tightly in her arms near the open doorway, as if afraid to lose him again. The emotion is tender, relieved, and overwhelming.
+
+Shot 2, 0:32-0:35:
+Medium close-up. While she embraces him, time seems to soften and she transforms into her younger self. The transformation should be subtle, luminous, and magical, never flashy. It should feel emotional rather than visual-effects-driven.
+
+Shot 3, 0:35-0:38:
+Medium shot. Now young again, she turns and steps toward the warm glowing light outside, still holding the dog in her arms. Her face is peaceful, joyful, and full of reunion.
+
+Shot 4, 0:38-0:41:
+Wide shot from inside the living room. She continues walking out through the open doorway with the dog, moving gently into the light. The room is left behind in soft warm stillness.
+
+Shot 5, 0:41-0:44:
+Cut back to the sofa. The elderly woman is now seen resting there peacefully, as if asleep, holding the framed photo of the dog against her chest. She is completely still. The moment should strongly imply that she has passed away, but with tenderness and calm, never harshly.
+
+Shot 6, 0:44-0:45:
+Final wide shot of the living room. She remains lying peacefully on the sofa, holding the photo. The open front door lets in warm light. The room is quiet. Love remains in the space. End on a soft, heartbreaking final beat.
+
+Camera language:
+Use slow cinematic pacing, gentle reaction-based timing, and very graceful camera movement. Prioritize emotional clarity and quiet impact over speed. Let the transformation and the final reveal breathe.
+
+Important:
+Maintain strict continuity with the previous scene in character design, wardrobe, dog design, living room layout, front door, props, lighting, and emotional tone. The image orientation must remain correct, not mirrored. The final sofa reveal must clearly show the elderly woman lying peacefully on the sofa, holding the framed photo, and the last shot must also include her still on the sofa, not an empty room.</textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide media-slide">
+    <div class="content wide">
+      <div class="label">Part 3 — Result</div>
+      <div class="bar"></div>
+      <div class="media-grid">
+        <div class="video-box">
+          <video controls playsinline>
+            <source src="assets/storyboard-lesson/animation-part-3.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="copy-stack">
+          <h2>הסוף עובד<br>כי הוא הוכן מראש.</h2>
+          <p class="body">
+            כאן הסטוריבורד כבר לא רק מסדר שוטים. הוא שומר על המשמעות:
+            טרנספורמציה, אור, יציאה מהחדר, ואז חזרה לרגע השקט על הספה.
+          </p>
+          <p class="punch">ככל שהסצנה רגישה יותר, ככה הסטוריבורד צריך להיות ברור יותר.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="content wide">
+      <div class="label">תבנית סטוריבורד</div>
+      <div class="bar"></div>
+      <h2>לפני Seedance, ממלאים את זה.</h2>
+      <div class="cards">
+        <div class="card">
+          <div class="num">01</div>
+          <h3>מה הסיפור ב־15 שניות?</h3>
+          <p>לא עלילה גדולה. שינוי קטן: לבד → ביחד, פחד → הקלה, שקט → גילוי.</p>
+        </div>
+        <div class="card">
+          <div class="num">02</div>
+          <h3>מה קורה בכל ביט?</h3>
+          <p>0-2, 2-4, 4-6. כל חלון זמן מקבל פעולה אחת ברורה.</p>
+        </div>
+        <div class="card">
+          <div class="num">03</div>
+          <h3>מה המצלמה עושה?</h3>
+          <p>Wide, close-up, tracking, dolly-in. המצלמה היא לא קישוט.</p>
+        </div>
+      </div>
+      <p class="punch">אם אי אפשר לחלק את זה לביטים, זה עדיין לא וידאו. זה רעיון.</p>
+    </div>
+  </section>
+
+  <section class="slide dark">
+    <div class="content wide">
+      <div class="label">תרגיל</div>
+      <div class="bar white"></div>
+      <h2>עכשיו כל אחד בונה סטוריבורד קצר.</h2>
+      <div class="two-col">
+        <div class="panel">
+          <h3>המשימה</h3>
+          <ol>
+            <li>בחר רעיון פשוט ל־15 שניות.</li>
+            <li>חלק אותו ל־5-6 ביטים.</li>
+            <li>כתוב מה קורה בכל ביט.</li>
+            <li>הוסף מצלמה, רגש, וסיום.</li>
+          </ol>
+        </div>
+        <div class="panel">
+          <h3>אחר כך</h3>
+          <ol>
+            <li>הפוך את הסטוריבורד לפרומפט.</li>
+            <li>שלח ל־Seedance.</li>
+            <li>בדוק מה השתבש.</li>
+            <li>תקן ביט אחד בלבד.</li>
+          </ol>
+        </div>
+      </div>
+      <p class="sub">הניסיון הראשון לא צריך להיות מושלם. הוא צריך להיות ניתן לאבחון.</p>
+    </div>
+  </section>
+
+</div>
+
+<nav class="nav">
+  <button onclick="go(-1)">→ הקודם</button>
+  <span class="counter" id="ctr"></span>
+  <button onclick="go(1)">הבא ←</button>
+</nav>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let cur = 0;
+  function show(n) {
+    slides[cur].classList.remove('active');
+    cur = (n + slides.length) % slides.length;
+    slides[cur].classList.add('active');
+    document.getElementById('ctr').textContent = (cur + 1) + ' / ' + slides.length;
+  }
+  function go(dir) { show(cur + dir); }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowDown' || e.key === ' ') go(1);
+    if (e.key === 'ArrowRight' || e.key === 'ArrowUp') go(-1);
+  });
+  document.querySelectorAll('textarea').forEach(box => {
+    box.addEventListener('click', () => box.select());
+  });
+  show(0);
+</script>
+</body>
+</html>
